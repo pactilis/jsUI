@@ -9,7 +9,7 @@ function template({ elements, horizontalAlign, spacing }: VSTackProps) {
     .gridGap(spacing ?? '0.5rem');
 }
 
-class VSTackProps {
+export class VSTackProps {
   elements: View[] = [];
   horizontalAlign?: string = 'center';
   spacing?: string = '0.5rem';
