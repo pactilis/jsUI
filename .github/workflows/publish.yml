@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+          persist-credentials: false
+
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+        registry-url: 'https://registry.npmjs.org'
+
+
+    - name: Extract version from tag ref
+      run: echo "::set-env name=VERSION::${GITHUB_REF/refs\/tags\/v/}"
+
+    - name: Install deps
+      run: yarn install
+
+    - name: Test
+      run: yarn test
+
+    - name: Build
+      run: |
+        yarn version --no-git-tag-version --new-version ${VERSION}
+        yarn build
+
+    - name: Publish
+      run: yarn deploy
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

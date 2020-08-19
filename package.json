@@ -1,14 +1,11 @@
 {
   "name": "@jsview/core",
   "version": "0.0.0",
-  "description": "Webcomponent jsview-core following open-wc recommendations",
+  "description": "A functionnal library for building web components",
   "author": "jsview-core",
   "license": "MIT",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "files": [
-    "dist"
-  ],
+  "main": "index.js",
+  "module": "index.js",
   "scripts": {
     "start": "concurrently --kill-others --names tsc,es-dev-server \"yarn tsc:watch\" \"es-dev-server --app-index demo/index.html --node-resolve --open --watch\"",
     "tsc:watch": "tsc --watch",
@@ -24,7 +21,8 @@
     "test:prune-snapshots": "karma start --prune-snapshots",
     "storybook": "start-storybook",
     "storybook:build": "build-storybook",
-    "build": "rimraf dist && tsc --declaration"
+    "build": "rimraf dist && tsc --declaration && cp package.json ./dist",
+    "deploy": "cd ./dist && yarn publish"
   },
   "dependencies": {
     "@open-wc/lit-helpers": "^0.3.11",
