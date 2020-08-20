@@ -6,6 +6,7 @@ function template({ title }: CounterProps) {
 
   useEffect(() => {
     document.title = `You clicked ${count} times`;
+    return () => console.log('clearing effect', count);
   });
 
   return html`

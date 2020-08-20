@@ -50,6 +50,16 @@ export function executeEffects(componentId: symbol) {
 }
 
 export function clearEffects(componentId: symbol) {
+  const effectMap = store.get(componentId);
+  if (!effectMap) {
+    return;
+  }
+  [...effectMap.keys()]
+    .sort()
+    .map(index => effectMap.get(index))
+    .forEach(async eff => {
+      eff!.clearFn?.();
+    });
   store.delete(componentId);
 }
 
