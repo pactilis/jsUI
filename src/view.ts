@@ -67,16 +67,26 @@ export { css } from 'lit-element';
 export type ViewElement = LitElement & { view: View };
 
 class TemplateView extends View {
-  constructor(private template: () => TemplateResult) {
+  constructor(
+    private template: (opts: {
+      attrs: { [key: string]: string };
+      styles: { [key: string]: string };
+    }) => TemplateResult
+  ) {
     super();
   }
   get body() {
-    return this.template();
+    return this.template({ attrs: this.attrs, styles: this.styles });
   }
 }
 
 export function createView(
-  template: (() => TemplateResult) | TemplateResult
+  template:
+    | ((opts: {
+        attrs: { [key: string]: string };
+        styles: { [key: string]: string };
+      }) => TemplateResult)
+    | TemplateResult
 ): View {
   if (typeof template === 'function') {
     return new TemplateView(template);

@@ -1,4 +1,4 @@
-import 'reflect-metadata';
+// import 'reflect-metadata';
 import { Counter } from './jsview-counter.js';
 
 export default {

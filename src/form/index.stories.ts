@@ -1,7 +1,9 @@
+import 'reflect-metadata';
 import { html } from 'lit-html';
 import { HSTack } from '../layout/index.js';
 import { createView } from '../view.js';
 import { Form } from './index.js';
+import { styleMap } from 'lit-html/directives/style-map';
 
 export default {
   title: 'form',
@@ -12,8 +14,8 @@ export const Simple = () =>
     ({ value, isValid, touched, onFieldChange, submit }) =>
       HSTack(
         createView(
-          html`
-            <div>
+          ({ styles }) => html`
+            <div style="${styleMap(styles)}">
               <label for="name">Name:</label>
               <input
                 id="name"
@@ -30,7 +32,7 @@ export const Simple = () =>
               />
             </div>
           `
-        ),
+        ).color('blue'),
 
         createView(
           html`

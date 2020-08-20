@@ -16,8 +16,7 @@ import {
   executeEffects,
   clearEffects,
 } from './hooks/index.js';
-import { View } from './index.js';
-import { Clazz } from './view.js';
+import { Clazz, View } from './view.js';
 import { toDashCase } from './util.js';
 
 export const cssPropMetadataKey = Symbol('cssProp');
