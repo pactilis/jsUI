@@ -18,6 +18,7 @@ import {
 } from './hooks/index.js';
 import { Clazz, View } from './view.js';
 import { toDashCase } from './util.js';
+import { nothing } from 'lit-html';
 
 export const cssPropMetadataKey = Symbol('cssProp');
 
@@ -52,10 +53,16 @@ export function view<T, U extends T = T>(
     render() {
       setCurrentComponent(this.componentId);
       const tpl = template.bind(this)(this.props);
+      if (!tpl) {
+        return nothing;
+      }
       if (tpl instanceof View) {
         return tpl.body;
       }
-      return tpl;
+      if (tpl instanceof TemplateResult) {
+        return tpl;
+      }
+      return tpl.map(t => (t instanceof View ? t.body : t));
     }
 
     firstUpdated() {
@@ -147,7 +154,7 @@ export function cssProp(name: string) {
 }
 
 export interface ComponentOptions<T> {
-  template: (props: T) => TemplateResult | View;
+  template: (props: T) => (TemplateResult | View) | (TemplateResult | View)[];
   cssTemplate?: (() => CSSResult) | CSSResult;
   cssProps?: Map<string, string>;
   viewRoot?: (element: Element) => Element;
