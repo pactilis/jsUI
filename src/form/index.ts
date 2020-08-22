@@ -14,13 +14,15 @@ function formTemplate<T>({
   const [value, setValue] = useState(initialValue);
   const [isValid, setIsValid] = useState(initialIsValid);
   const [touched, setTouched] = useState(false);
+  const [formFieldChanged, setFormFieldChanged] = useState(false);
 
   const isFormValid = Object.keys(isValid).every(
     name => isValid[name as keyof T]
   );
 
-  if (touched) {
+  if (touched && formFieldChanged) {
     onChange?.(value, isFormValid);
+    setFormFieldChanged(false);
   }
 
   const onFieldChange = (
@@ -37,6 +39,7 @@ function formTemplate<T>({
       [name]: fieldIsValid,
     });
     setTouched(true);
+    setFormFieldChanged(true);
   };
 
   return html`
