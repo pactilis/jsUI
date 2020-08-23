@@ -13,7 +13,7 @@ export function createViewBuilder<T extends View>(
   cssProps: Map<string, string> = new Map()
 ): Builder<T> {
   const builder = (new Proxy(Object.assign(new Ctor(), initValue) as T, {
-    get(target, prop, receiver) {
+    get(target, prop) {
       if (prop === 'body') {
         return target.body;
       }
@@ -56,7 +56,7 @@ export function generateBindings<T extends object>(
   const options: { [k: string]: any } = {};
 
   Object.getOwnPropertyNames(obj)
-    .filter(prop => !['attrs', 'styles', ...ignore].includes(prop))
+    .filter(prop => !['attrs', 'styles', 'context', ...ignore].includes(prop))
     .forEach(((prop: keyof T) => {
       switch (typeof obj[prop]) {
         case 'boolean':

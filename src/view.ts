@@ -6,9 +6,17 @@ import {
   TemplateResult,
 } from 'lit-html';
 
+export class ViewContext {
+  count = 0;
+  valueMap: WeakMap<any, string> = new WeakMap();
+  keyMap: Map<string, any> = new Map();
+}
+
 export abstract class View {
   attrs: { [key: string]: string } = {};
   styles: { [key: string]: string } = {};
+
+  static contextStore: Map<string, ViewContext> = new Map();
 
   abstract get body(): TemplateResult | string | typeof nothing;
 
@@ -46,6 +54,22 @@ export abstract class View {
       ...this.attrs,
       ...attrs,
     };
+    return this;
+  }
+
+  context(token: string, value: any) {
+    if (!View.contextStore.has(token)) {
+      View.contextStore.set(token, new ViewContext());
+    }
+    const viewContext = View.contextStore.get(token)!;
+    if (!viewContext.valueMap.has(value)) {
+      const key = `${token}-${viewContext.count}`;
+      viewContext.valueMap.set(value, key);
+      viewContext.keyMap.set(key, value);
+      viewContext.count += 1;
+    }
+    const key = viewContext.valueMap.get(value);
+    this.style(token, key);
     return this;
   }
 }

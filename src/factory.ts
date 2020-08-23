@@ -70,7 +70,7 @@ export function view<T, U extends T = T>(
     }
 
     updated() {
-      executeEffects(this.componentId);
+      executeEffects(this.componentId, this);
     }
 
     disconnectedCallback() {

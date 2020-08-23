@@ -1,7 +1,7 @@
 import { getCurrent } from './core.js';
 
 interface Effect {
-  func: () => (() => void) | void;
+  func: (element: HTMLElement) => (() => void) | void;
   clearFn?: () => void;
   deps?: any[];
   shouldRun: boolean;
@@ -9,7 +9,10 @@ interface Effect {
 
 const store: Map<symbol, Map<number, Effect>> = new Map();
 
-export function useEffect(fn: () => void | (() => void), deps?: any[]) {
+export function useEffect(
+  fn: (element: HTMLElement) => void | (() => void),
+  deps?: any[]
+) {
   const [currentComponent, currentIndex] = getCurrent();
 
   if (!currentComponent) {
@@ -29,7 +32,7 @@ export function useEffect(fn: () => void | (() => void), deps?: any[]) {
   });
 }
 
-export function executeEffects(componentId: symbol) {
+export function executeEffects(componentId: symbol, element: HTMLElement) {
   const effectMap = store.get(componentId);
   if (!effectMap) {
     return;
@@ -40,7 +43,7 @@ export function executeEffects(componentId: symbol) {
     .filter(eff => eff?.shouldRun)
     .forEach(async eff => {
       eff!.clearFn?.();
-      const ret = eff!.func();
+      const ret = eff!.func(element);
       if (ret) {
         eff!.clearFn = ret;
       } else {
