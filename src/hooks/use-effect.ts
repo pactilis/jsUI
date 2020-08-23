@@ -1,4 +1,4 @@
-import { getCurrent } from './core.js';
+import { getCurrent, incrementIndex } from './core.js';
 
 interface Effect {
   func: (element: HTMLElement) => (() => void) | void;
@@ -30,6 +30,7 @@ export function useEffect(
     deps,
     shouldRun: !equal(deps, previousEffect?.deps),
   });
+  incrementIndex();
 }
 
 export function executeEffects(componentId: symbol, element: HTMLElement) {
