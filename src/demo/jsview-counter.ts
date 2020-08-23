@@ -1,7 +1,7 @@
 import { cssProp } from '../factory.js';
 import { css, html, useState, view, useEffect } from '../index.js';
 import { navigate } from '../router/index.js';
-import { useContext } from '../hooks/useContext.js';
+import { useContext } from '../hooks/use-context.js';
 
 function template({ title, active }: CounterProps) {
   const [count, setCount] = useState(5);
