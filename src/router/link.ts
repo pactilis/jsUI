@@ -1,8 +1,8 @@
-import { createView, View } from '../view.js';
-import { html } from 'lit-html';
 import { spread } from '@open-wc/lit-helpers/src/spread';
+import { html } from 'lit-html';
 import { styleMap } from 'lit-html/directives/style-map';
 import { createViewBuilder } from '../builder.js';
+import { View } from '../view.js';
 import { navigate } from './use-location.js';
 
 export class LinkView extends View {
