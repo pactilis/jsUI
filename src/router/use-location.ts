@@ -1,5 +1,4 @@
 import { useEffect } from '../hooks/index.js';
-import { installRouter } from 'pwa-helpers/router';
 
 const callbacks = new Set<(location: Location) => void>();
 
@@ -18,9 +17,14 @@ export function navigate(url: string) {
 
 export function useLocation(callback: (location: Location) => void) {
   useEffect(() => {
-    installRouter(location => {
-      callback(location);
-    });
+    const listener = () => callback(window.location);
+    window.addEventListener('popstate', listener);
+
     register(callback);
+    callback(window.location);
+    return () => {
+      unregister(callback);
+      window.removeEventListener('popstate', listener);
+    };
   }, []);
 }

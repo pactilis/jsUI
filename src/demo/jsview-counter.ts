@@ -1,6 +1,6 @@
 import { cssProp } from '../factory.js';
 import { css, html, useState, view, useEffect } from '../index.js';
-import { navigate } from '../router/index.js';
+import { navigate, Link } from '../router/index.js';
 import { useContext } from '../hooks/use-context.js';
 
 function template({ title, active }: CounterProps) {
@@ -22,6 +22,7 @@ function template({ title, active }: CounterProps) {
     </button>
 
     <a href="/demo/view1">Go to view 1</a>
+    ${Link('Go to view 1 link').to('/demo/view1').body}
     <button @click="${() => navigate('/demo')}">Go home</button>
   `;
 }

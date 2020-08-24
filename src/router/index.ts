@@ -89,6 +89,7 @@ export function Router(...routes: Route[]) {
 }
 
 export { navigate } from './use-location.js';
+export * from './link.js';
 
 function wrap(route: Route, routingParam?: RoutingParam, active = false) {
   return createView(
