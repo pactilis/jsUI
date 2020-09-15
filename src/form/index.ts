@@ -30,14 +30,14 @@ function formTemplate<T>({
     fieldValue: any,
     fieldIsValid: boolean
   ) => {
-    setValue({
-      ...value,
+    setValue(oldValue => ({
+      ...oldValue,
       [name]: fieldValue,
-    });
-    setIsValid({
-      ...isValid,
+    }));
+    setIsValid(oldValid => ({
+      ...oldValid,
       [name]: fieldIsValid,
-    });
+    }));
     setTouched(true);
     setFormFieldChanged(true);
   };
