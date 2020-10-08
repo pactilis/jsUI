@@ -1,8 +1,8 @@
 {
-  "name": "@jsview/core",
+  "name": "@wces/jsui",
   "version": "0.0.0",
   "description": "A functionnal library for building web components",
-  "author": "jsview-core",
+  "author": "Pactilis dev team",
   "license": "MIT",
   "main": "index.js",
   "module": "index.js",
