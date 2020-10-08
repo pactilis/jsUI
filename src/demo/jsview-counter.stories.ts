@@ -1,4 +1,3 @@
-// import 'reflect-metadata';
 import { Counter } from './jsview-counter.js';
 import { VSTack } from '../layout/index.js';
 

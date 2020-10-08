@@ -1,16 +1,12 @@
 import { css, html } from 'lit-element';
 import { View } from '../view.js';
-import { view, cssProp } from '../index.js';
+import { view, cssProp } from '../factory.js';
 import './grid-item.js';
 
 export * from './grid-item.js';
 
 function template({ elements }: { elements?: View[] }) {
-  return html`
-    <div class="container">
-      ${elements?.map(el => el.body)}
-    </div>
-  `;
+  return html` <div class="container">${elements?.map(el => el.body)}</div> `;
 }
 
 const cssTemplate = css`

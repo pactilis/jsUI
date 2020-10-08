@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+import 'reflect-metadata'
 import { render, createView, html } from '../dist/index.js';
 import { Router } from '../dist/router/index.js';
 

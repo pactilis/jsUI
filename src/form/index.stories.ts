@@ -67,7 +67,7 @@ export const Simple = () =>
             Submit
           </button>`
         )
-      ).verticalAlign('end')
+      ).justifyItems('end')
   )
     .value({ name: 'Jonatan', gender: 'F' })
     .isValid({ name: true, gender: true })

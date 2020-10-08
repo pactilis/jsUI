@@ -1,7 +1,10 @@
 import { cssProp } from '../factory.js';
-import { css, html, useState, view, useEffect } from '../index.js';
-import { navigate, Link } from '../router/index.js';
 import { useContext } from '../hooks/use-context.js';
+import { css, html, useEffect, useState, view } from '../index.js';
+import { HSTack } from '../layout/index.js';
+import { createView } from '../view.js';
+
+const MY_COUNTER_CONTEXT = '--my-counter-context';
 
 function template({ title, active }: CounterProps) {
   const [count, setCount] = useState(5);
@@ -11,19 +14,20 @@ function template({ title, active }: CounterProps) {
     return () => console.log('clearing effect', count);
   });
 
-  const context = useContext('--my-counter-context');
+  const context = useContext(MY_COUNTER_CONTEXT);
   console.log('context =>', context);
 
   return html`
     <h2>${title} Nr. ${count}!</h2>
     <div>active: ${active}</div>
-    <button @click=${() => setCount(prevCount => prevCount + 1)}>
-      increment
-    </button>
-
-    <a href="/demo/view1">Go to view 1</a>
-    ${Link('Go to view 1 link').to('/demo/view1').body}
-    <button @click="${() => navigate('/demo')}">Go home</button>
+    ${HSTack(
+      createView(html`
+        <button @click=${() => setCount(prevCount => prevCount - 1)}>-</button>
+      `),
+      createView(html`
+        <button @click=${() => setCount(prevCount => prevCount + 1)}>+</button>
+      `)
+    ).body}
   `;
 }
 
