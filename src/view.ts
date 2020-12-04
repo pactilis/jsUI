@@ -30,14 +30,8 @@ export abstract class View {
     return element;
   }
 
-  withAnimation(
-    keyframes: Keyframe[] | PropertyIndexedKeyframes,
-    options?: number | KeyframeAnimationOptions
-  ) {
-    this.animations.push({
-      keyframes,
-      options,
-    });
+  withAnimation(animations: ViewAnimation[]) {
+    this.animations = animations;
     return this;
   }
 

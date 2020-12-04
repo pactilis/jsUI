@@ -48,7 +48,10 @@ export function useState<T>(
 
 function createSetState<T>(component: symbol, index: number) {
   return function (val: ((prev: T) => T) | T) {
-    const state: State<T> = store.get(component)!.get(index)!;
+    const state: State<T> | undefined = store.get(component)?.get(index);
+    if (!state) {
+      return;
+    }
     const previousValue = state.value;
 
     if (typeof val === 'function') {
