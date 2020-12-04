@@ -12,9 +12,15 @@ export class ViewContext {
   keyMap: Map<string, any> = new Map();
 }
 
+export interface ViewAnimation {
+  keyframes: Keyframe[] | PropertyIndexedKeyframes | null;
+  options?: number | KeyframeAnimationOptions | undefined;
+}
+
 export abstract class View {
   attrs: { [key: string]: string } = {};
   styles: { [key: string]: string } = {};
+  animations: ViewAnimation[] = [];
 
   static contextStore: Map<string, ViewContext> = new Map();
 
@@ -22,6 +28,17 @@ export abstract class View {
 
   viewRoot(element: Element): Element {
     return element;
+  }
+
+  withAnimation(
+    keyframes: Keyframe[] | PropertyIndexedKeyframes,
+    options?: number | KeyframeAnimationOptions
+  ) {
+    this.animations.push({
+      keyframes,
+      options,
+    });
+    return this;
   }
 
   slot(name: string): this {

@@ -16,7 +16,7 @@ import {
   executeEffects,
   clearEffects,
 } from './hooks/index.js';
-import { Clazz, View } from './view.js';
+import { Clazz, View, ViewAnimation } from './view.js';
 import { toDashCase } from './util.js';
 import { nothing } from 'lit-html';
 
@@ -47,6 +47,7 @@ export function view<T, U extends T = T>(
     componentId = Symbol();
 
     @property({ type: Object }) props!: T;
+    @property({ type: Array }) animations: ViewAnimation[] = [];
 
     static styles = styles;
 
@@ -69,8 +70,14 @@ export function view<T, U extends T = T>(
       subscribe(this.componentId, this);
     }
 
-    updated() {
+    updated(changedProperties: Map<string | number | symbol, unknown>) {
       executeEffects(this.componentId, this);
+
+      if (changedProperties.has('animations')) {
+        this.animations.forEach(animation => {
+          this.animate(animation.keyframes, animation.options);
+        });
+      }
     }
 
     disconnectedCallback() {
@@ -112,6 +119,7 @@ export function view<T, U extends T = T>(
           .view="${this}"
           style="${styleMap(this.styles)}"
           .props="${this.props ? this.props : this}"
+          .animations="${this.animations}"
         ></${el}>
       `;
     }
