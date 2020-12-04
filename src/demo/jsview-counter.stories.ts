@@ -7,7 +7,7 @@ export default {
 
 export const Simple = () =>
   VSTack(
-    Counter().withAnimation([
+    Counter().withAnimations([
       {
         keyframes: { transform: ['rotate(0deg)', 'rotate(360deg)'] },
         options: { duration: 1000, iterations: Infinity },
@@ -22,7 +22,7 @@ export const CustomTextColor = () =>
     VSTack(
       Counter('Hi buddy')
         .textColor('darkRed')
-        .withAnimation([
+        .withAnimations([
           {
             keyframes: { transform: ['rotate(0deg)', 'rotate(360deg)'] },
             options: { duration: 1000, iterations: Infinity },

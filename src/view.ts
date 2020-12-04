@@ -30,7 +30,7 @@ export abstract class View {
     return element;
   }
 
-  withAnimation(animations: ViewAnimation[]) {
+  withAnimations(animations: ViewAnimation[]) {
     this.animations = animations;
     return this;
   }
