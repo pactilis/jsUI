@@ -9,8 +9,13 @@ export default {
 export const Simple = () =>
   Grid(
     createView(html`<button>A button</button>`),
-    createView(html`<button>A button 2</button>`),
-    createView(html`<button>A button 3</button>`)
+    Grid(
+      createView(html`<button>A button 2</button>`),
+      createView(html`<button>A button 3</button>`)
+    )
+      .templateColumns('1fr')
+      .gridRowGap('1rem')
   )
     .templateColumns('repeat(2, 1fr)')
-    .gridGap('2rem').body;
+    .gridGap('2rem')
+    .alignItems('center').body;

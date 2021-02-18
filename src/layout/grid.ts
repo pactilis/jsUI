@@ -1,52 +1,66 @@
 import { css, html } from 'lit-element';
+import { cssProp, view } from '../factory.js';
 import { View } from '../view.js';
-import { view, cssProp } from '../factory.js';
 import './grid-item.js';
 
 export * from './grid-item.js';
 
 function template({ elements }: { elements?: View[] }) {
-  return html` <div class="container">${elements?.map(el => el.body)}</div> `;
+  return html` <slot>${elements?.map(el => el.body)}</slot> `;
 }
 
 const cssTemplate = css`
-  .container {
+  :host {
     display: grid;
-    grid-template-columns: var(--grid-template-columns, 1fr);
+    grid-template-columns: var(--grid-template-columns);
     grid-template-rows: var(--grid-template-rows);
     align-items: var(--grid-align-items);
     justify-items: var(--grid-justify-items);
-    grid-gap: var(--grid-gap, normal);
-    grid-column-gap: var(--grid-column-gap, var(--grid-gap, normal));
-    grid-row-gap: var(--grid-row-gap, var(--grid-gap, normal));
-    grid-auto-flow: var(--grid-auto-flow, row);
-    grid-auto-columns: var(--grid-auto-columns, auto);
-    grid-auto-rows: var(--grid-auto-rows, auto);
+
+    column-gap: var(--grid-column-gap, var(--grid-gap));
+    grid-column-gap: var(--grid-column-gap, var(--grid-gap));
+
+    row-gap: var(--grid-row-gap, var(--grid-gap));
+    grid-row-gap: var(--grid-row-gap, var(--grid-gap));
+
+    grid-auto-flow: var(--grid-auto-flow);
+    grid-auto-columns: var(--grid-auto-columns);
+    grid-auto-rows: var(--grid-auto-rows);
   }
 `;
 
 export class GridProps {
   elements?: View[] = undefined;
+
   @cssProp('--grid-template-columns')
-  templateColumns?: string = undefined;
+  templateColumns = '';
+
   @cssProp('--grid-template-rows')
-  templateRows?: string = undefined;
+  templateRows = '';
+
   @cssProp('--grid-align-items')
-  alignItems?: string = undefined;
+  alignItems = '';
+
   @cssProp('--grid-justify-items')
-  justifyItems?: string = undefined;
+  justifyItems = '';
+
   @cssProp('--grid-gap')
-  gridGap?: string = undefined;
+  gridGap = '';
+
   @cssProp('--grid-column-gap')
-  gridColumnGap?: string = undefined;
+  gridColumnGap = '';
+
   @cssProp('--grid-row-gap')
-  gridRowGap?: string = undefined;
+  gridRowGap = '';
+
   @cssProp('--grid-auto-flow')
-  gridAutoFlow?: string = undefined;
+  gridAutoFlow = '';
+
   @cssProp('--grid-auto-columns')
-  gridAutoColumns?: string = undefined;
+  gridAutoColumns = '';
+
   @cssProp('--grid-auto-rows')
-  gridAutoRows?: string = undefined;
+  gridAutoRows = '';
 }
 
 export const [GridViewBuilder, GridView] = view(
@@ -56,5 +70,16 @@ export const [GridViewBuilder, GridView] = view(
 );
 
 export function Grid(...elements: View[]) {
-  return GridViewBuilder().elements(elements);
+  return GridViewBuilder()
+    .templateColumns('none')
+    .templateRows('none')
+    .alignItems('normal')
+    .justifyItems('auto')
+    .gridGap('normal')
+    .gridColumnGap('var(--grid-gap)')
+    .gridRowGap('var(--grid-gap)')
+    .gridAutoFlow('row')
+    .gridAutoColumns('auto')
+    .gridAutoRows('auto')
+    .elements(elements);
 }

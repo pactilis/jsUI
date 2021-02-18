@@ -2,7 +2,7 @@ import { html } from 'lit-html';
 import { useState } from '../hooks/index.js';
 import { Builder } from '../builder.js';
 import { View } from '../view.js';
-import { view } from '../index.js';
+import { view } from '../factory.js';
 
 function formTemplate<T>({
   factory,

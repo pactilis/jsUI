@@ -11,6 +11,11 @@ export class LinkView extends View {
 
   className = '';
 
+  private onClick = (e: Event) => {
+    e.preventDefault();
+    navigate(this.to);
+  };
+
   get body() {
     return html`
       <a
@@ -18,16 +23,11 @@ export class LinkView extends View {
         style="${styleMap(this.styles)}"
         class="${this.className}"
         href="${this.to}"
-        @click="${this.#onClick}"
+        @click="${this.onClick}"
         >${this.label}
       </a>
     `;
   }
-
-  #onClick = (e: Event) => {
-    e.preventDefault();
-    navigate(this.to);
-  };
 }
 
 export function Link(label: string) {

@@ -4,6 +4,5 @@ import { Grid } from './grid.js';
 export function VSTack(...elements: View[]) {
   return Grid(...elements)
     .templateColumns('1fr')
-    .justifyItems('center')
     .gridGap('0.5rem');
 }
