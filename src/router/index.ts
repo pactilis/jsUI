@@ -32,7 +32,7 @@ function template({ routes, fallback, manualLocation }: RouterProps) {
     let rParam: RoutingParam | undefined;
 
     const r = routes
-      .filter(r => !!r.pattern)
+      .filter(({ pattern }) => !!pattern)
       .find(({ pattern }) => {
         const parsingResult = parseRoute(pattern!, path, search);
         if (parsingResult) {
@@ -41,6 +41,7 @@ function template({ routes, fallback, manualLocation }: RouterProps) {
         }
         return false;
       });
+
     return [r, rParam];
   }, [routes, location]);
 
@@ -64,7 +65,7 @@ function template({ routes, fallback, manualLocation }: RouterProps) {
         )
       : (nothing as TemplateResult),
     ...displayedRoutes.map(r => {
-      if (r === route) {
+      if (r.pattern === route?.pattern) {
         return wrap(r, routingParam, true).style('display', 'block');
       }
       return wrap(r, routingParam, false).style('display', 'none');
