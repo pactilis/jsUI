@@ -3,7 +3,7 @@ import { html, nothing, TemplateResult } from 'lit-html';
 import { styleMap } from 'lit-html/directives/style-map';
 import { until } from 'lit-html/directives/until';
 import { view } from '../factory.js';
-import { useState, useEffect } from '../hooks/index.js';
+import { useState, useEffect, useMemo } from '../hooks/index.js';
 import { createView, View } from '../view.js';
 import { parseRoute, RoutingParam } from './route-parser.js';
 import { useLocation } from './use-location.js';
@@ -14,6 +14,7 @@ function template({ routes, fallback, manualLocation }: RouterProps) {
   );
 
   const [matchedRoutes, setMatchedRoutes] = useState(new Set<string>());
+  const [displayedRoutes, setDisplayedRoutes] = useState<Route[]>([]);
 
   useLocation(location => {
     if (!manualLocation) {
@@ -25,42 +26,49 @@ function template({ routes, fallback, manualLocation }: RouterProps) {
     return html``;
   }
 
-  let routingParam: RoutingParam | undefined;
-  const { pathname: path, search } = location;
+  const [route, routingParam] = useMemo(() => {
+    const { pathname: path, search } = location;
 
-  const route = routes
-    .filter(r => !!r.pattern)
-    .find(({ pattern }) => {
-      const parsingResult = parseRoute(pattern!, path, search);
-      if (parsingResult) {
-        routingParam = parsingResult;
-        return true;
-      }
-      return false;
-    });
+    let rParam: RoutingParam | undefined;
+
+    const r = routes
+      .filter(r => !!r.pattern)
+      .find(({ pattern }) => {
+        const parsingResult = parseRoute(pattern!, path, search);
+        if (parsingResult) {
+          rParam = parsingResult;
+          return true;
+        }
+        return false;
+      });
+    return [r, rParam];
+  }, [routes, location]);
 
   useEffect(() => {
-    if (route) {
-      matchedRoutes.add(route.pattern!);
-      setMatchedRoutes(matchedRoutes);
+    if (route && !matchedRoutes.has(route.pattern!)) {
+      setMatchedRoutes(
+        prevMatchedRoutes => new Set([...prevMatchedRoutes, route.pattern!])
+      );
+      setDisplayedRoutes(prevDisplayedRoutes => [
+        ...prevDisplayedRoutes,
+        route,
+      ]);
     }
-  });
+  }, [route]);
 
   return [
-    ...routes
-      .filter(r => r === route || matchedRoutes.has(r.pattern!))
-      .map(r => {
-        if (r === route) {
-          return wrap(r, routingParam, true).style('display', 'block');
-        }
-        return wrap(r, routingParam, false).style('display', 'none');
-      }),
     fallback
       ? wrap(fallback, undefined, !route).style(
           'display',
           !route ? 'block' : 'none'
         )
       : (nothing as TemplateResult),
+    ...displayedRoutes.map(r => {
+      if (r === route) {
+        return wrap(r, routingParam, true).style('display', 'block');
+      }
+      return wrap(r, routingParam, false).style('display', 'none');
+    }),
   ];
 }
 

@@ -54,13 +54,13 @@ function createSetState<T>(component: symbol, index: number) {
     }
     const previousValue = state.value;
 
-    if (typeof val === 'function') {
+    if (typeof val === 'function' && typeof previousValue !== 'function') {
       state.value = (val as (prev: T) => T)(state.value);
     } else {
-      state.value = val;
+      state.value = val as T;
     }
     if (previousValue != state.value) {
-      components.get(component)!.requestUpdate();
+      components.get(component)?.requestUpdate();
     }
   };
 }

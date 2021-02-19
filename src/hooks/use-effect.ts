@@ -75,7 +75,7 @@ function equal(deps?: any[], prevDeps?: any[]): boolean {
     return false;
   }
   for (let i = 0; i < deps.length; i++) {
-    if (deps[i] != prevDeps[i]) {
+    if (deps[i] !== prevDeps[i]) {
       return false;
     }
   }

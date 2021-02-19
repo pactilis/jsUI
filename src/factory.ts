@@ -112,7 +112,7 @@ export function view<T, U extends T = T>(
       }
     }
 
-    get body() {
+    get body(): TemplateResult {
       return shtml`
         <${el}
           ...=${spread({ ...this.attrs })}

@@ -2,6 +2,7 @@ import { cssProp } from '../factory.js';
 import { useContext } from '../hooks/use-context.js';
 import { css, html, useEffect, useState, view } from '../index.js';
 import { HSTack } from '../layout/index.js';
+import { Link } from '../router/link.js';
 import { createView } from '../view.js';
 
 const MY_COUNTER_CONTEXT = '--my-counter-context';
@@ -28,6 +29,8 @@ function template({ title, active }: CounterProps) {
         <button @click=${() => setCount(prevCount => prevCount + 1)}>+</button>
       `)
     ).body}
+    ${HSTack(Link('view 1').to('/demo/view1'), Link('view 2').to('/demo/view2'))
+      .body}
   `;
 }
 
