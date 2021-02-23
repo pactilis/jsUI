@@ -13,7 +13,7 @@ export const Simple = () =>
         options: { duration: 1000, iterations: Infinity },
       },
     ])
-  ).body;
+  ).justifyItems('center').body;
 
 export const CustomTitle = () => Counter('Hello Wolrd').body;
 
@@ -29,4 +29,6 @@ export const CustomTextColor = () =>
           },
         ])
     ).context('--my-counter-context', { count: 45 })
-  ).context('--my-counter-context', { count: 59 }).body;
+  )
+    .justifyItems('center')
+    .context('--my-counter-context', { count: 59 }).body;

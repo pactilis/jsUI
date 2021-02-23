@@ -5,8 +5,12 @@ import './grid-item.js';
 
 export * from './grid-item.js';
 
-function template({ elements }: { elements?: View[] }) {
-  return html` <slot>${elements?.map(el => el.body)}</slot> `;
+function template() {
+  return html` <slot></slot> `;
+}
+
+function slotTemplate({ elements }: { elements?: View[] }) {
+  return html`${elements?.map(el => el.body)}`;
 }
 
 const cssTemplate = css`
@@ -65,7 +69,7 @@ export class GridProps {
 
 export const [GridViewBuilder, GridView] = view(
   'jsview-grid',
-  { template, cssTemplate },
+  { template, slotTemplate, cssTemplate },
   GridProps
 );
 

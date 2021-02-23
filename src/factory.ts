@@ -35,7 +35,13 @@ export function view<T, U extends T = T>(
 
 export function view<T, U extends T = T>(
   tag: string,
-  { template, cssTemplate, cssProps, viewRoot }: ComponentOptions<T>,
+  {
+    template,
+    slotTemplate,
+    cssTemplate,
+    cssProps,
+    viewRoot,
+  }: ComponentOptions<T>,
   PropsCtor?: Clazz<U>
 ) {
   let styles: CSSResult | CSSResult[] = [];
@@ -120,7 +126,13 @@ export function view<T, U extends T = T>(
           style="${styleMap(this.styles)}"
           .props="${this.props ? this.props : this}"
           .animations="${this.animations}"
-        ></${el}>
+        >
+        ${
+          slotTemplate
+            ? slotTemplate(this.props ? this.props : (this as any))
+            : nothing
+        }
+        </${el}>
       `;
     }
   }
@@ -163,6 +175,9 @@ export function cssProp(name: string) {
 
 export interface ComponentOptions<T> {
   template: (props: T) => (TemplateResult | View) | (TemplateResult | View)[];
+  slotTemplate?: (
+    props: T
+  ) => (TemplateResult | View) | (TemplateResult | View)[];
   cssTemplate?: (() => CSSResult) | CSSResult;
   cssProps?: Map<string, string>;
   viewRoot?: (element: Element) => Element;
