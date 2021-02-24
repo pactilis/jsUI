@@ -21,7 +21,9 @@ jobs:
         run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
 
       - name: Install deps
-        run: yarn install
+        run: |
+          yarn install
+          yarn install:peers
 
       - name: Test
         run: yarn test

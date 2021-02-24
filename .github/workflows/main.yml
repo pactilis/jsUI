@@ -30,6 +30,7 @@ jobs:
       - name: Install deps
         run: |
           yarn install
+          yarn install:peers
 
       - name: Test
         run: yarn test
