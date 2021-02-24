@@ -33,7 +33,7 @@ const cssTemplate = css`
   }
 `;
 
-export class GridProps {
+class Props {
   elements?: View[] = undefined;
 
   @cssProp('--grid-template-columns')
@@ -67,11 +67,12 @@ export class GridProps {
   gridAutoRows = '';
 }
 
-export const [GridViewBuilder, GridView] = view(
-  'jsview-grid',
-  { template, slotTemplate, cssTemplate },
-  GridProps
-);
+export const [GridViewBuilder, GridView] = view('jsview-grid', {
+  template,
+  slotTemplate,
+  cssTemplate,
+  Props,
+});
 
 export function Grid(...elements: View[]) {
   return GridViewBuilder()

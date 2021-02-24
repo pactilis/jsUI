@@ -10,7 +10,7 @@ function formTemplate<T>({
   isValid: initialIsValid,
   onChange,
   onSubmit,
-}: FormProps<T>) {
+}: Props<T>) {
   const [value, setValue] = useState(initialValue);
   const [isValid, setIsValid] = useState(initialIsValid);
   const [touched, setTouched] = useState(false);
@@ -55,7 +55,7 @@ function formTemplate<T>({
   `;
 }
 
-export class FormProps<T> {
+class Props<T> {
   factory?: (_: FormFactoryParam<T>) => View = undefined;
   value: T = {} as T;
   isValid: { [key in keyof T]: boolean } = {} as { [key in keyof T]: boolean };
@@ -71,16 +71,11 @@ export interface FormFactoryParam<T> {
   submit: () => void;
 }
 
-export const [FormViewBuilder, FormView] = view<FormProps<any>>(
-  'jsview-form',
-  {
-    template: formTemplate as any,
-  },
-  FormProps
-);
+export const [FormViewBuilder, FormView] = view<Props<any>>('jsview-form', {
+  template: formTemplate as any,
+  Props,
+});
 
 export function Form<T>(factory: (_: FormFactoryParam<T>) => View) {
-  return ((FormViewBuilder() as unknown) as Builder<FormProps<T>>).factory(
-    factory
-  );
+  return ((FormViewBuilder() as unknown) as Builder<Props<T>>).factory(factory);
 }

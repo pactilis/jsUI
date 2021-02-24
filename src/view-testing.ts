@@ -43,33 +43,32 @@ export function query<E extends Element = Element>(
 
 export function query<K extends keyof HTMLElementTagNameMap | Element>(
   element: ViewElement,
-  ...searchClasses: Clazz<View>[]
+  ...searchClasses: { View: Clazz<View> }[]
 ): ViewElement | null;
 
 export function query(
   element: ViewElement,
-  ...searchClasses: Clazz<View>[] | string[]
+  ...searchClasses: { View: Clazz<View> }[] | string[]
 ): ViewElement | Element | null {
   if (searchClasses.length === 0) {
-    return element;
+    return View.root(element);
   }
 
-  const view = element.view;
   if (typeof searchClasses[0] === 'string') {
     return (
-      view
-        .viewRoot(element)
-        .shadowRoot?.querySelector(searchClasses[0] as string) ?? null
+      View.root(element).shadowRoot?.querySelector(
+        searchClasses[0] as string
+      ) ?? null
     );
   }
-  const nodes = view.viewRoot(element).shadowRoot?.querySelectorAll('*');
+  const nodes = View.root(element).shadowRoot?.querySelectorAll('*');
   if (!nodes) {
     return null;
   }
   for (let i = 0; i < nodes!.length; ++i) {
     const el: ViewElement = nodes[i] as any;
-    if (el.view instanceof (searchClasses[0] as any)) {
-      return query(el, ...(searchClasses as Clazz<View>[]).slice(1));
+    if (el.view instanceof searchClasses[0].View) {
+      return query(el, ...(searchClasses as { View: Clazz<View> }[]).slice(1));
     }
   }
   return null;
@@ -82,25 +81,24 @@ export function queryAll(
 
 export function queryAll(
   element: ViewElement,
-  ...searchClasses: Clazz<View>[]
+  ...searchClasses: { View: Clazz<View> }[]
 ): Element[];
 
 export function queryAll(
   element: ViewElement,
-  ...searchClasses: Clazz<View>[] | string[]
+  ...searchClasses: { View: Clazz<View> }[] | string[]
 ): Element[] | NodeListOf<Element> {
   if (searchClasses.length === 0) {
     return [];
   }
-  const view = element.view;
   if (typeof searchClasses[0] === 'string') {
     return (
-      view
-        .viewRoot(element)
-        .shadowRoot?.querySelectorAll(searchClasses[0] as string) ?? []
+      View.root(element).shadowRoot?.querySelectorAll(
+        searchClasses[0] as string
+      ) ?? []
     );
   }
-  const nodes = view.viewRoot(element).shadowRoot?.querySelectorAll('*');
+  const nodes = View.root(element).shadowRoot?.querySelectorAll('*');
   if (!nodes) {
     return [];
   }
@@ -109,11 +107,11 @@ export function queryAll(
   for (let i = 0; i < nodes!.length; ++i) {
     const el: ViewElement = nodes[i] as any;
     if (
-      ((searchClasses as unknown) as View[]).find(
-        (C: any) => el.view instanceof C
+      (searchClasses as { View: Clazz<View> }[]).find(
+        C => el.view instanceof C.View
       )
     ) {
-      elements.push(el);
+      elements.push(View.root(el));
     }
   }
 

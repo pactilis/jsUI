@@ -6,44 +6,59 @@ import {
   property,
   TemplateResult,
 } from 'lit-element';
+import { nothing } from 'lit-html';
 import { styleMap } from 'lit-html/directives/style-map';
 import { asStatic, asTag } from 'static-params';
 import { Builder, createViewBuilder } from './builder.js';
 import {
-  setCurrentComponent,
-  subscribe,
+  clearEffects,
   clearState,
   executeEffects,
-  clearEffects,
+  setCurrentComponent,
+  subscribe,
 } from './hooks/index.js';
-import { Clazz, View, ViewAnimation } from './view.js';
 import { toDashCase } from './util.js';
-import { nothing } from 'lit-html';
+import { Clazz, View, ViewAnimation } from './view.js';
 
 export const cssPropMetadataKey = Symbol('cssProp');
+
+export function view<T, U, V>(
+  tag: string,
+  options: ComponentOptionsWithCtorAndFactory<T, U, V>
+): [V & { View: Clazz<View> }, Clazz<View>, Clazz<any>];
+
+export function view<T, U extends T = T>(
+  tag: string,
+  options: ComponentOptionsWithCtor<T, U>
+): [BuilderFactory<U> & { View: Clazz<View> }, Clazz<View>, Clazz<any>];
 
 export function view<T, U extends T = T>(
   tag: string,
   options: ComponentOptions<T>
-): [() => Builder<View & { props: U }>, Clazz<View>, Clazz<any>];
+): [
+  (() => Builder<View & { props: U }>) & { View: Clazz<View> },
+  Clazz<View>,
+  Clazz<any>
+];
 
-export function view<T, U extends T = T>(
+export function view<T, U extends T = T, V = BuilderFactory<U>>(
   tag: string,
-  options: ComponentOptions<T>,
-  PropsCtor?: Clazz<U>
-): [() => Builder<U & View>, Clazz<View>, Clazz<any>];
-
-export function view<T, U extends T = T>(
-  tag: string,
-  {
-    template,
-    slotTemplate,
-    cssTemplate,
-    cssProps,
-    viewRoot,
-  }: ComponentOptions<T>,
-  PropsCtor?: Clazz<U>
+  options:
+    | ComponentOptions<T>
+    | ComponentOptionsWithCtor<T, U>
+    | ComponentOptionsWithCtorAndFactory<T, U, V>
 ) {
+  const { template, slotTemplate, cssTemplate, cssProps, viewRoot } = options;
+  let Props: Clazz<U> | undefined = undefined;
+  let mapBuilder: ((_: () => Builder<U & View>) => V) | undefined = undefined;
+
+  if (hasPropsCtor<T, U>(options)) {
+    Props = options.Props;
+  }
+  if (hasFactory<T, U, V>(options)) {
+    mapBuilder = options.mapBuilder;
+  }
+
   let styles: CSSResult | CSSResult[] = [];
   if (cssTemplate) {
     styles = typeof cssTemplate === 'function' ? cssTemplate() : cssTemplate;
@@ -109,8 +124,8 @@ export function view<T, U extends T = T>(
 
     constructor() {
       super();
-      if (PropsCtor) {
-        const mixin = new PropsCtor();
+      if (Props) {
+        const mixin = new Props();
         const props = Object.keys(mixin);
         props.forEach(key => {
           this[key as keyof this] = mixin[key as keyof T] as any;
@@ -138,8 +153,8 @@ export function view<T, U extends T = T>(
   }
 
   const _cssProps = cssProps ?? new Map<string, string>();
-  if (PropsCtor && (Reflect as any).getMetadata) {
-    const mixin = new PropsCtor();
+  if (Props && (Reflect as any).getMetadata) {
+    const mixin = new Props();
     Object.keys(mixin).forEach(key => {
       const propName = (Reflect as any).getMetadata(
         cssPropMetadataKey,
@@ -152,13 +167,17 @@ export function view<T, U extends T = T>(
     });
   }
 
-  return [
-    function () {
-      return createViewBuilder(ComponentView, {}, _cssProps) as any;
-    },
-    ComponentView,
-    ComponentClass,
-  ] as any;
+  let ViewFactory: any = function () {
+    return createViewBuilder(ComponentView, {}, _cssProps) as any;
+  };
+
+  if (mapBuilder) {
+    ViewFactory = mapBuilder(ViewFactory);
+  }
+
+  ViewFactory.View = ComponentView;
+
+  return [ViewFactory, ComponentView, ComponentClass] as any;
 }
 
 export function cssPropsFrom(...props: string[]) {
@@ -173,7 +192,7 @@ export function cssProp(name: string) {
   }
 }
 
-export interface ComponentOptions<T> {
+interface ComponentOptions<T> {
   template: (props: T) => (TemplateResult | View) | (TemplateResult | View)[];
   slotTemplate?: (
     props: T
@@ -181,4 +200,29 @@ export interface ComponentOptions<T> {
   cssTemplate?: (() => CSSResult) | CSSResult;
   cssProps?: Map<string, string>;
   viewRoot?: (element: Element) => Element;
+}
+interface ComponentOptionsWithCtor<T, U> extends ComponentOptions<T> {
+  Props: Clazz<U>;
+}
+
+export type BuilderFactory<T> = () => Builder<T & View>;
+
+interface ComponentOptionsWithCtorAndFactory<T, U, V>
+  extends ComponentOptionsWithCtor<T, U> {
+  mapBuilder: (_: BuilderFactory<U>) => V;
+}
+
+function hasPropsCtor<T, U>(
+  options: any
+): options is ComponentOptionsWithCtor<T, U> {
+  if ('Props' in options) {
+    return true;
+  }
+  return false;
+}
+
+function hasFactory<T, U, V>(
+  options: any
+): options is ComponentOptionsWithCtorAndFactory<T, U, V> {
+  return hasPropsCtor<T, U>(options) && 'mapBuilder' in options;
 }

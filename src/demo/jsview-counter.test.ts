@@ -1,6 +1,7 @@
 import { expect } from '@open-wc/testing';
 import 'reflect-metadata';
 import { fixture, query, queryAll } from '../view-testing.js';
+import { Button } from './button.js';
 import { Counter } from './jsview-counter.js';
 
 describe('Counter', () => {
@@ -11,14 +12,14 @@ describe('Counter', () => {
 
   it('decreases the counter on button - click', async () => {
     const el = await fixture(Counter());
-    query(el, 'button')!.click();
+    query(el, Button)!.click();
     await el.updateComplete;
     expect(query(el, 'h2')?.textContent).to.eq('Hey there Nr. 4!');
   });
 
   it('increases the counter on button + click', async () => {
     const el = await fixture(Counter());
-    const button = queryAll(el, 'button').item(1)! as HTMLButtonElement;
+    const button = queryAll(el, Button)[1] as HTMLButtonElement;
     button.click();
     await el.updateComplete;
     expect(query(el, 'h2')?.textContent).to.eq('Hey there Nr. 6!');

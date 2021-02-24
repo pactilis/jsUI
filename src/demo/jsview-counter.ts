@@ -1,13 +1,28 @@
-import { cssProp } from '../factory.js';
-import { useContext } from '../hooks/use-context.js';
-import { css, html, useEffect, useState, view } from '../index.js';
+import {
+  BuilderFactory,
+  css,
+  cssProp,
+  html,
+  useContext,
+  useEffect,
+  useState,
+  view,
+} from '../index.js';
 import { HSTack } from '../layout/index.js';
 import { Link } from '../router/link.js';
-import { createView } from '../view.js';
+import { Button } from './button.js';
 
 const MY_COUNTER_CONTEXT = '--my-counter-context';
 
-function template({ title, active }: CounterProps) {
+class Props {
+  title?: string = '';
+  active?: boolean = false;
+
+  @cssProp('--jsview-counter-text-color')
+  textColor?: string = undefined;
+}
+
+function template({ title, active }: Props) {
   const [count, setCount] = useState(5);
 
   useEffect(() => {
@@ -22,12 +37,8 @@ function template({ title, active }: CounterProps) {
     <h2>${title} Nr. ${count}!</h2>
     <div>active: ${active}</div>
     ${HSTack(
-      createView(html`
-        <button @click=${() => setCount(prevCount => prevCount - 1)}>-</button>
-      `),
-      createView(html`
-        <button @click=${() => setCount(prevCount => prevCount + 1)}>+</button>
-      `)
+      Button('-').onClick(() => setCount(prevCount => prevCount - 1)),
+      Button('+').onClick(() => setCount(prevCount => prevCount + 1))
     ).body}
     ${HSTack(
       Link('Home').to('/demo'),
@@ -45,20 +56,11 @@ const cssTemplate = css`
   }
 `;
 
-export class CounterProps {
-  title?: string = '';
-  active?: boolean = false;
-
-  @cssProp('--jsview-counter-text-color')
-  textColor?: string = undefined;
-}
-
-export const [CounterViewBuilder, CounterView] = view(
-  'jsview-counter',
-  { template, cssTemplate },
-  CounterProps
-);
-
-export function Counter(title = 'Hey there') {
-  return CounterViewBuilder().title(title);
-}
+export const [Counter] = view('jsview-counter', {
+  template,
+  cssTemplate,
+  Props,
+  mapBuilder: (CounterBuilder: BuilderFactory<Props>) => (
+    title = 'Hey there'
+  ) => CounterBuilder().title(title),
+});

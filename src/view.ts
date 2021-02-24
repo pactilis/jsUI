@@ -26,6 +26,10 @@ export abstract class View {
 
   abstract get body(): TemplateResult | string | typeof nothing;
 
+  static root(element: ViewElement): Element {
+    return element.view.viewRoot(element);
+  }
+
   viewRoot(element: Element): Element {
     return element;
   }

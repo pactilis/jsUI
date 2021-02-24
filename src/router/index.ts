@@ -3,12 +3,12 @@ import { html, nothing, TemplateResult } from 'lit-html';
 import { styleMap } from 'lit-html/directives/style-map';
 import { until } from 'lit-html/directives/until';
 import { view } from '../factory.js';
-import { useState, useEffect, useMemo } from '../hooks/index.js';
+import { useEffect, useMemo, useState } from '../hooks/index.js';
 import { createView, View } from '../view.js';
 import { parseRoute, RoutingParam } from './route-parser.js';
 import { useLocation } from './use-location.js';
 
-function template({ routes, fallback, manualLocation }: RouterProps) {
+function template({ routes, fallback, manualLocation }: Props) {
   const [location, setLocation] = useState<Location | undefined>(
     manualLocation // for testing
   );
@@ -73,7 +73,7 @@ function template({ routes, fallback, manualLocation }: RouterProps) {
   ];
 }
 
-export class RouterProps {
+class Props {
   routes: Route[] = [];
   fallback?: Route = undefined;
   manualLocation?: Location = undefined;
@@ -87,18 +87,17 @@ export interface Route {
   }) => Promise<View> | View;
 }
 
-export const [RouterViewBuilder, RouterView] = view(
-  'jsview-router',
-  { template },
-  RouterProps
-);
+export const [RouterViewBuilder, RouterView] = view('jsview-router', {
+  template,
+  Props,
+});
 
 export function Router(...routes: Route[]) {
   return RouterViewBuilder().routes(routes);
 }
 
-export { navigate } from './use-location.js';
 export * from './link.js';
+export { navigate } from './use-location.js';
 
 function wrap(route: Route, routingParam?: RoutingParam, active = false) {
   return createView(
