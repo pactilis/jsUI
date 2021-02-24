@@ -34,9 +34,9 @@ function template({ title, active }: CounterProps) {
       Button('+').onClick(() => setCount(prevCount => prevCount + 1))
     ).body}
     ${HSTack(
-      Link('Home').to('/demo'),
-      Link('view 1').to('/demo/view1'),
-      Link('view 2').to('/demo/view2')
+      Link('Home').to('/'),
+      Link('view 1').to('/view1'),
+      Link('view 2').to('/view2')
     ).body}
   `;
 }

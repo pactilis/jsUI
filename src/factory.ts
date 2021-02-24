@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import { spread } from '@open-wc/lit-helpers/src/spread';
 import {
   CSSResult,
@@ -49,8 +50,8 @@ export function view<T, U extends T = T, V = BuilderFactory<U>>(
     | ComponentOptionsWithCtorAndFactory<T, U, V>
 ) {
   const { template, slotTemplate, cssTemplate, cssProps, viewRoot } = options;
-  let Props: Clazz<U> | undefined = undefined;
-  let mapBuilder: ((_: () => Builder<U & View>) => V) | undefined = undefined;
+  let Props: Clazz<U> | undefined;
+  let mapBuilder: ((_: () => Builder<U & View>) => V) | undefined;
 
   if (hasPropsCtor<T, U>(options)) {
     Props = options.Props;
@@ -65,7 +66,7 @@ export function view<T, U extends T = T, V = BuilderFactory<U>>(
   }
 
   class ComponentClass extends LitElement {
-    componentId = Symbol();
+    componentId = Symbol(tag);
 
     @property({ type: Object }) props!: T;
     @property({ type: Array }) animations: ViewAnimation[] = [];
@@ -167,6 +168,7 @@ export function view<T, U extends T = T, V = BuilderFactory<U>>(
     });
   }
 
+  // eslint-disable-next-line func-names
   let ViewFactory: any = function () {
     return createViewBuilder(ComponentView, {}, _cssProps) as any;
   };
@@ -190,6 +192,7 @@ export function cssProp(name: string) {
   if ((Reflect as any).metadata) {
     return (Reflect as any).metadata(cssPropMetadataKey, name);
   }
+  return undefined;
 }
 
 interface ComponentOptions<T> {

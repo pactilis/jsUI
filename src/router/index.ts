@@ -8,6 +8,20 @@ import { createView, View } from '../view.js';
 import { parseRoute, RoutingParam } from './route-parser.js';
 import { useLocation } from './use-location.js';
 
+function wrap(route: Route, routingParam?: RoutingParam, active = false) {
+  return createView(
+    ({ styles, attrs }) => html`
+      <div ...=${spread(attrs)} style="${styleMap(styles)}">
+        ${until(
+          Promise.resolve(route.viewFactory({ routingParam, active })).then(
+            v => v.body
+          )
+        )}
+      </div>
+    `
+  );
+}
+
 function template({ routes, fallback, manualLocation }: RouterProps) {
   const [location, setLocation] = useState<Location | undefined>(
     manualLocation // for testing
@@ -16,9 +30,9 @@ function template({ routes, fallback, manualLocation }: RouterProps) {
   const [matchedRoutes, setMatchedRoutes] = useState(new Set<string>());
   const [displayedRoutes, setDisplayedRoutes] = useState<Route[]>([]);
 
-  useLocation(location => {
+  useLocation(loc => {
     if (!manualLocation) {
-      setLocation({ ...location });
+      setLocation({ ...loc });
     }
   });
 
@@ -96,17 +110,3 @@ export const [Router, RouterView] = view('jsview-router', {
 
 export * from './link.js';
 export { navigate } from './use-location.js';
-
-function wrap(route: Route, routingParam?: RoutingParam, active = false) {
-  return createView(
-    ({ styles, attrs }) => html`
-      <div ...=${spread(attrs)} style="${styleMap(styles)}">
-        ${until(
-          Promise.resolve(route.viewFactory({ routingParam, active })).then(
-            v => v.body
-          )
-        )}
-      </div>
-    `
-  );
-}

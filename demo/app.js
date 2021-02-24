@@ -1,49 +1,46 @@
-/* eslint-disable no-undef */
+import { html } from 'lit-html';
 import 'reflect-metadata';
-import { render, createView, html } from '../dist/index.js';
+import { createView, render } from '../dist/index.js';
 import { Router } from '../dist/router/index.js';
 
 render(
   Router({
-    pattern: '/demo(/)',
-    viewFactory: ({ active }) => {
-      return import('../dist/demo/jsview-counter.js').then(module => {
+    pattern: '(/)',
+    viewFactory: ({ active }) =>
+      import('../dist/demo/jsview-counter.js').then(module => {
         const { Counter } = module;
         return Counter('Hello JsView').active(active).textColor('darkRed');
-      });
-    },
+      }),
   }).fallback({
-    viewFactory: ({ active }) =>
+    viewFactory: () =>
       createView(html`
         <div>
           <header>HEADER</header>
 
           ${Router(
             {
-              pattern: '/demo/view1(/)',
-              viewFactory: ({ active }) => {
-                return import('../dist/demo/jsview-counter.js').then(module => {
+              pattern: '/view1(/)',
+              viewFactory: ({ active }) =>
+                import('../dist/demo/jsview-counter.js').then(module => {
                   const { Counter } = module;
                   return Counter('Hello View 1')
                     .active(active)
                     .textColor('darkGreen');
-                });
-              },
+                }),
             },
             {
-              pattern: '/demo/view2(/)',
-              viewFactory: ({ active }) => {
-                return import('../dist/demo/jsview-counter.js').then(module => {
+              pattern: '/view2(/)',
+              viewFactory: ({ active }) =>
+                import('../dist/demo/jsview-counter.js').then(module => {
                   const { Counter } = module;
                   return Counter('Hello View 2')
                     .active(active)
                     .textColor('darkBlue');
-                });
-              },
+                }),
             }
           ).fallback({
             viewFactory: () =>
-              createView(html`404 View <a href="/demo/">Go Home</a>`),
+              createView(html`404 View <a href="/">Go Home</a>`),
           }).body}
         </div>
       `),

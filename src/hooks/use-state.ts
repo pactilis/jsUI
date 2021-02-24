@@ -47,7 +47,7 @@ export function useState<T>(
 }
 
 function createSetState<T>(component: symbol, index: number) {
-  return function (val: ((prev: T) => T) | T) {
+  return function setVal(val: ((prev: T) => T) | T) {
     const state: State<T> | undefined = store.get(component)?.get(index);
     if (!state) {
       return;
@@ -59,7 +59,7 @@ function createSetState<T>(component: symbol, index: number) {
     } else {
       state.value = val as T;
     }
-    if (previousValue != state.value) {
+    if (previousValue !== state.value) {
       components.get(component)?.requestUpdate();
     }
   };

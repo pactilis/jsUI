@@ -1,4 +1,4 @@
-let currentComponent: symbol | undefined = undefined;
+let currentComponent: symbol | undefined;
 let currentIndex = 0;
 
 export function setCurrentComponent(componentId: symbol) {

@@ -30,6 +30,7 @@ export abstract class View {
     return element.view.viewRoot(element);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   viewRoot(element: Element): Element {
     return element;
   }
@@ -40,7 +41,7 @@ export abstract class View {
   }
 
   slot(name: string): this {
-    this.attrs['slot'] = name;
+    this.attrs.slot = name;
     return this;
   }
 

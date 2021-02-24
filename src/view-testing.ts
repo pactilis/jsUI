@@ -1,10 +1,8 @@
 import { fixture as wcFixture } from '@open-wc/testing';
 import { TemplateResult } from 'lit-html';
-import { View, ViewElement, Clazz } from './view.js';
+import { Clazz, View, ViewElement } from './view.js';
 
-export function fixture<T extends Element>(
-  template: View
-): Promise<ViewElement>;
+export function fixture(template: View): Promise<ViewElement>;
 
 export function fixture<T extends Element>(
   template:
@@ -36,12 +34,9 @@ export function query<K extends keyof SVGElementTagNameMap>(
   search: K
 ): SVGElementTagNameMap[K] | null;
 
-export function query<E extends Element = Element>(
-  element: ViewElement,
-  search: string
-): Element | null;
+export function query(element: ViewElement, search: string): Element | null;
 
-export function query<K extends keyof HTMLElementTagNameMap | Element>(
+export function query(
   element: ViewElement,
   ...searchClasses: { View: Clazz<View> }[]
 ): ViewElement | null;
@@ -65,7 +60,7 @@ export function query(
   if (!nodes) {
     return null;
   }
-  for (let i = 0; i < nodes!.length; ++i) {
+  for (let i = 0; i < nodes!.length; i += 1) {
     const el: ViewElement = nodes[i] as any;
     if (el.view instanceof searchClasses[0].View) {
       return query(el, ...(searchClasses as { View: Clazz<View> }[]).slice(1));
@@ -104,7 +99,7 @@ export function queryAll(
   }
   const elements: Element[] = [];
 
-  for (let i = 0; i < nodes!.length; ++i) {
+  for (let i = 0; i < nodes!.length; i += 1) {
     const el: ViewElement = nodes[i] as any;
     if (
       (searchClasses as { View: Clazz<View> }[]).find(

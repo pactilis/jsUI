@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { View, Clazz } from './view.js';
 
 export type Builder<T> = {
@@ -22,7 +23,7 @@ export function createViewBuilder<T extends View>(
         const propFn = (target as any)[prop];
 
         if (typeof propFn === 'function') {
-          return function (...args: any) {
+          return (...args: any) => {
             propFn.call(target, ...args);
             return builder;
           };

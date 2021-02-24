@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { getCurrent, incrementIndex } from './core.js';
 
 interface Effect {
@@ -74,7 +75,7 @@ function equal(deps?: any[], prevDeps?: any[]): boolean {
   if (deps.length !== prevDeps.length) {
     return false;
   }
-  for (let i = 0; i < deps.length; i++) {
+  for (let i = 0; i < deps.length; i += 1) {
     if (deps[i] !== prevDeps[i]) {
       return false;
     }

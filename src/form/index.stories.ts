@@ -1,9 +1,8 @@
-import 'reflect-metadata';
 import { html } from 'lit-html';
+import { styleMap } from 'lit-html/directives/style-map';
 import { HSTack } from '../layout/index.js';
 import { createView } from '../view.js';
 import { Form } from './index.js';
-import { styleMap } from 'lit-html/directives/style-map';
 
 export default {
   title: 'form',
@@ -22,7 +21,7 @@ export const Simple = () =>
                 type="text"
                 name="name"
                 required
-                value="${value.name}"
+                .value="${value.name}"
                 @change="${(e: { target: HTMLInputElement }) =>
                   onFieldChange(
                     'name',
@@ -43,7 +42,7 @@ export const Simple = () =>
                 .value="${value.gender}"
                 name="gender"
                 required
-                @change="${(e: { target: HTMLSelectElement }) =>
+                @blur="${(e: { target: HTMLSelectElement }) =>
                   onFieldChange(
                     'gender',
                     e.target.value,
