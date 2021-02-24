@@ -22,6 +22,7 @@ import { toDashCase } from './util.js';
 import { Clazz, View, ViewAnimation } from './view.js';
 
 export const cssPropMetadataKey = Symbol('cssProp');
+export const slotMetadataKey = Symbol('slot');
 
 export function view<T, U, V>(
   tag: string,
@@ -107,6 +108,8 @@ export function view<T, U extends T = T, V = BuilderFactory<U>>(
   class ComponentView extends View {
     props?: T = undefined;
 
+    slotProps = new Map<keyof T, string>();
+
     viewRoot(element: Element) {
       if (viewRoot) {
         return viewRoot(element);
@@ -121,8 +124,23 @@ export function view<T, U extends T = T, V = BuilderFactory<U>>(
         const props = Object.keys(mixin);
         props.forEach(key => {
           this[key as keyof this] = mixin[key as keyof T] as any;
+          const slotName = (Reflect as any).getMetadata(
+            slotMetadataKey,
+            mixin,
+            key
+          );
+          if (slotName) {
+            this.slotProps.set(key as keyof T, slotName);
+          }
         });
       }
+    }
+
+    getPropValue(key: string) {
+      if (this.props) {
+        return this.props[key as keyof T];
+      }
+      return this[key as keyof this];
     }
 
     get body(): TemplateResult {
@@ -141,6 +159,14 @@ export function view<T, U extends T = T, V = BuilderFactory<U>>(
               )
             : nothing
         }
+        ${[...this.slotProps.keys()].map(key => {
+          const keyView = this.getPropValue(key as string);
+
+          const name = this.slotProps.get(key);
+          return processTemplate(keyView as any, v =>
+            v.slot(!name || name === 'default' ? '' : name)
+          );
+        })}
         </${el}>
       `;
     }
@@ -188,19 +214,27 @@ export function cssProp(name: string) {
   return undefined;
 }
 
+export function slot(name = 'default') {
+  if ((Reflect as any).metadata) {
+    return (Reflect as any).metadata(slotMetadataKey, name);
+  }
+  return undefined;
+}
+
 function processTemplate(
-  tpl: (TemplateResult | View) | (TemplateResult | View)[]
+  tpl: (TemplateResult | View) | (TemplateResult | View)[],
+  viewPreprocessor: (_: View) => View = v => v
 ) {
   if (!tpl) {
     return nothing;
   }
   if (tpl instanceof View) {
-    return tpl.body;
+    return viewPreprocessor(tpl).body;
   }
   if (tpl instanceof TemplateResult) {
     return tpl;
   }
-  return tpl.map(t => (t instanceof View ? t.body : t));
+  return tpl.map(t => (t instanceof View ? viewPreprocessor(t).body : t));
 }
 
 interface ComponentOptions<T> {

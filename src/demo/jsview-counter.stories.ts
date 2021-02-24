@@ -1,5 +1,8 @@
-import { Counter } from './jsview-counter.js';
+import { html } from 'lit-html';
 import { VSTack } from '../layout/index.js';
+import { createView } from '../view.js';
+import { Button } from './button.js';
+import { Counter } from './jsview-counter.js';
 
 export default {
   title: 'jsview-counter',
@@ -15,7 +18,12 @@ export const Simple = () =>
     ])
   ).justifyItems('center').body;
 
-export const CustomTitle = () => Counter('Hello Wolrd').body;
+export const CustomTitle = () =>
+  Counter('Hello Wolrd')
+    .incrementTrigger(Button('++'))
+    .decrementTrigger(Button('--'))
+    .comment([createView(html`COOL`), createView(html`Buddy`), Button('BIG')])
+    .description(createView(html`This is my description`)).body;
 
 export const CustomTextColor = () =>
   VSTack(

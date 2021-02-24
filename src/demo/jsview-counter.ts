@@ -1,15 +1,31 @@
 import { html } from 'lit-html';
 import { css } from 'lit-element';
 import { cssProp, useContext, useEffect, useState, view } from '../index.js';
-import { HSTack } from '../layout/index.js';
+import { HSTack, VSTack } from '../layout/index.js';
 import { Link } from '../router/link.js';
 import { Button } from './button.js';
+import { createView, View } from '../view.js';
+import { slot } from '../factory.js';
+import { useSlot } from '../hooks/use-slot.js';
+import { Slot } from '../slot.js';
 
 const MY_COUNTER_CONTEXT = '--my-counter-context';
 
 export class CounterProps {
   title?: string = '';
   active?: boolean = false;
+
+  @slot('increment')
+  incrementTrigger?: View = Button('+');
+
+  @slot('decrement')
+  decrementTrigger?: View = Button('-');
+
+  @slot()
+  comment = [createView(html``)];
+
+  @slot()
+  description = createView(html``);
 
   @cssProp('--jsview-counter-text-color')
   textColor?: string = undefined;
@@ -23,6 +39,32 @@ function template({ title, active }: CounterProps) {
     return () => console.log('clearing effect', count);
   });
 
+  useSlot(
+    component => {
+      if (component) {
+        const listener = () => setCount(prev => prev + 2);
+        component.addEventListener('click', listener);
+        return () => component.removeEventListener('click', listener);
+      }
+      return null;
+    },
+    [],
+    'increment'
+  );
+
+  useSlot(
+    component => {
+      if (component) {
+        const listener = () => setCount(prev => prev - 2);
+        component.addEventListener('click', listener);
+        return () => component.removeEventListener('click', listener);
+      }
+      return null;
+    },
+    [],
+    'decrement'
+  );
+
   const context = useContext(MY_COUNTER_CONTEXT);
   console.log('context =>', context);
 
@@ -33,6 +75,7 @@ function template({ title, active }: CounterProps) {
       Button('-').onClick(() => setCount(prevCount => prevCount - 1)),
       Button('+').onClick(() => setCount(prevCount => prevCount + 1))
     ).body}
+    ${VSTack(Slot('decrement'), VSTack(Slot()), Slot('increment')).body}
     ${HSTack(
       Link('Home').to('/'),
       Link('view 1').to('/view1'),
