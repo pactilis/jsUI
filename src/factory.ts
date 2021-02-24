@@ -76,16 +76,7 @@ export function view<T, U extends T = T, V = BuilderFactory<U>>(
     render() {
       setCurrentComponent(this.componentId);
       const tpl = template.bind(this)(this.props);
-      if (!tpl) {
-        return nothing;
-      }
-      if (tpl instanceof View) {
-        return tpl.body;
-      }
-      if (tpl instanceof TemplateResult) {
-        return tpl;
-      }
-      return tpl.map(t => (t instanceof View ? t.body : t));
+      return processTemplate(tpl);
     }
 
     firstUpdated() {
@@ -145,7 +136,9 @@ export function view<T, U extends T = T, V = BuilderFactory<U>>(
         >
         ${
           slotTemplate
-            ? slotTemplate(this.props ? this.props : (this as any))
+            ? processTemplate(
+                slotTemplate(this.props ? this.props : (this as any))
+              )
             : nothing
         }
         </${el}>
@@ -193,6 +186,21 @@ export function cssProp(name: string) {
     return (Reflect as any).metadata(cssPropMetadataKey, name);
   }
   return undefined;
+}
+
+function processTemplate(
+  tpl: (TemplateResult | View) | (TemplateResult | View)[]
+) {
+  if (!tpl) {
+    return nothing;
+  }
+  if (tpl instanceof View) {
+    return tpl.body;
+  }
+  if (tpl instanceof TemplateResult) {
+    return tpl;
+  }
+  return tpl.map(t => (t instanceof View ? t.body : t));
 }
 
 interface ComponentOptions<T> {
