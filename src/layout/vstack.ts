@@ -6,3 +6,5 @@ export function VSTack(...elements: View[]) {
     .templateColumns('1fr')
     .gridGap('0.5rem');
 }
+
+VSTack.View = Grid.View;

@@ -100,9 +100,6 @@ export function render(
   return litRender(result, container, options);
 }
 
-export { html } from 'lit-html';
-export { css } from 'lit-element';
-
 export type ViewElement = LitElement & { view: View };
 
 class TemplateView extends View {

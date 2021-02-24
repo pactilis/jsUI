@@ -1,4 +1,5 @@
-import { html, view } from '../index.js';
+import { html } from 'lit-html';
+import { view } from '../index.js';
 
 class Props {
   label = '';

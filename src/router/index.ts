@@ -8,7 +8,7 @@ import { createView, View } from '../view.js';
 import { parseRoute, RoutingParam } from './route-parser.js';
 import { useLocation } from './use-location.js';
 
-function template({ routes, fallback, manualLocation }: Props) {
+function template({ routes, fallback, manualLocation }: RouterProps) {
   const [location, setLocation] = useState<Location | undefined>(
     manualLocation // for testing
   );
@@ -73,7 +73,7 @@ function template({ routes, fallback, manualLocation }: Props) {
   ];
 }
 
-class Props {
+export class RouterProps {
   routes: Route[] = [];
   fallback?: Route = undefined;
   manualLocation?: Location = undefined;
@@ -87,14 +87,12 @@ export interface Route {
   }) => Promise<View> | View;
 }
 
-export const [RouterViewBuilder, RouterView] = view('jsview-router', {
+export const [Router, RouterView] = view('jsview-router', {
   template,
-  Props,
+  Props: RouterProps,
+  mapBuilder: RouterBuilder => (...routes: Route[]) =>
+    RouterBuilder().routes(routes),
 });
-
-export function Router(...routes: Route[]) {
-  return RouterViewBuilder().routes(routes);
-}
 
 export * from './link.js';
 export { navigate } from './use-location.js';

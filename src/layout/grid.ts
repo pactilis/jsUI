@@ -33,7 +33,7 @@ const cssTemplate = css`
   }
 `;
 
-class Props {
+export class GridProps {
   elements?: View[] = undefined;
 
   @cssProp('--grid-template-columns')
@@ -67,24 +67,22 @@ class Props {
   gridAutoRows = '';
 }
 
-export const [GridViewBuilder, GridView] = view('jsview-grid', {
+export const [Grid, GridView] = view('jsview-grid', {
   template,
   slotTemplate,
   cssTemplate,
-  Props,
+  Props: GridProps,
+  mapBuilder: GridBuilder => (...elements: View[]) =>
+    GridBuilder()
+      .templateColumns('none')
+      .templateRows('none')
+      .alignItems('normal')
+      .justifyItems('auto')
+      .gridGap('normal')
+      .gridColumnGap('var(--grid-gap)')
+      .gridRowGap('var(--grid-gap)')
+      .gridAutoFlow('row')
+      .gridAutoColumns('auto')
+      .gridAutoRows('auto')
+      .elements(elements),
 });
-
-export function Grid(...elements: View[]) {
-  return GridViewBuilder()
-    .templateColumns('none')
-    .templateRows('none')
-    .alignItems('normal')
-    .justifyItems('auto')
-    .gridGap('normal')
-    .gridColumnGap('var(--grid-gap)')
-    .gridRowGap('var(--grid-gap)')
-    .gridAutoFlow('row')
-    .gridAutoColumns('auto')
-    .gridAutoRows('auto')
-    .elements(elements);
-}

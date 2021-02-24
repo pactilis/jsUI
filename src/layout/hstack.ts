@@ -1,5 +1,5 @@
 import { View } from '../view.js';
-import { Grid, GridView } from './grid.js';
+import { Grid } from './grid.js';
 
 export function HSTack(...elements: View[]) {
   return Grid(...elements)
@@ -10,4 +10,4 @@ export function HSTack(...elements: View[]) {
     .gridAutoColumns('max-content');
 }
 
-export const HSTackView = GridView;
+HSTack.View = Grid.View;

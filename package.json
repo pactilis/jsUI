@@ -26,11 +26,13 @@
   },
   "dependencies": {
     "@open-wc/lit-helpers": "^0.3.11",
+    "pwa-helpers": "^0.9.1",
+    "static-params": "^0.1.3"
+  },
+  "peerDependencies": {
     "lit-element": "^2.4.0",
     "lit-html": "^1.3.0",
-    "pwa-helpers": "^0.9.1",
-    "reflect-metadata": "^0.1.13",
-    "static-params": "^0.1.3"
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@open-wc/demoing-storybook": "^2.0.0",
