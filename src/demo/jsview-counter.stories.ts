@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { html } from 'lit-html';
 import { VSTack } from '../layout/index.js';
 import { createView } from '../view.js';
@@ -22,8 +23,11 @@ export const CustomTitle = () =>
   Counter('Hello Wolrd')
     .incrementTrigger(Button('++'))
     .decrementTrigger(Button('--'))
-    .comment([createView(html`COOL`), createView(html`Buddy`), Button('BIG')])
-    .description(createView(html`This is my description`)).body;
+    .comment([
+      createView(html`<div>COOL</div>`),
+      Button('Buddy'),
+      Button('BIG'),
+    ]).body;
 
 export const CustomTextColor = () =>
   VSTack(

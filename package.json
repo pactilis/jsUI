@@ -89,7 +89,8 @@
       "no-redeclare": "off",
       "no-shadow": "off",
       "no-use-before-define": "off",
-      "no-undef": "off"
+      "no-undef": "off",
+      "consistent-return": "off"
     }
   },
   "prettier": {

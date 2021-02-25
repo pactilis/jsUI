@@ -1,13 +1,13 @@
-import { html } from 'lit-html';
 import { css } from 'lit-element';
-import { cssProp, useContext, useEffect, useState, view } from '../index.js';
-import { HSTack, VSTack } from '../layout/index.js';
-import { Link } from '../router/link.js';
-import { Button } from './button.js';
-import { createView, View } from '../view.js';
+import { html } from 'lit-html';
 import { slot } from '../factory.js';
 import { useSlot } from '../hooks/use-slot.js';
+import { cssProp, useContext, useEffect, useState, view } from '../index.js';
+import { HSTack } from '../layout/index.js';
+import { Link } from '../router/link.js';
 import { Slot } from '../slot.js';
+import { View } from '../view.js';
+import { Button } from './button.js';
 
 const MY_COUNTER_CONTEXT = '--my-counter-context';
 
@@ -16,16 +16,13 @@ export class CounterProps {
   active?: boolean = false;
 
   @slot('increment')
-  incrementTrigger?: View = Button('+');
+  incrementTrigger?: View = undefined;
 
   @slot('decrement')
-  decrementTrigger?: View = Button('-');
+  decrementTrigger?: View = undefined;
 
   @slot()
-  comment = [createView(html``)];
-
-  @slot()
-  description = createView(html``);
+  comment: View[] = [];
 
   @cssProp('--jsview-counter-text-color')
   textColor?: string = undefined;
@@ -39,6 +36,10 @@ function template({ title, active }: CounterProps) {
     return () => console.log('clearing effect', count);
   });
 
+  useSlot((...elements) => {
+    console.log('Every slots', elements);
+  }, []);
+
   useSlot(
     component => {
       if (component) {
@@ -46,7 +47,6 @@ function template({ title, active }: CounterProps) {
         component.addEventListener('click', listener);
         return () => component.removeEventListener('click', listener);
       }
-      return null;
     },
     [],
     'increment'
@@ -59,7 +59,6 @@ function template({ title, active }: CounterProps) {
         component.addEventListener('click', listener);
         return () => component.removeEventListener('click', listener);
       }
-      return null;
     },
     [],
     'decrement'
@@ -75,11 +74,13 @@ function template({ title, active }: CounterProps) {
       Button('-').onClick(() => setCount(prevCount => prevCount - 1)),
       Button('+').onClick(() => setCount(prevCount => prevCount + 1))
     ).body}
-    ${VSTack(Slot('decrement'), VSTack(Slot()), Slot('increment')).body}
+    ${HSTack(Slot('decrement'), Slot(), Slot('increment')).justifyItems(
+      'center'
+    ).body}
     ${HSTack(
-      Link('Home').to('/'),
-      Link('view 1').to('/view1'),
-      Link('view 2').to('/view2')
+      Link(html`<a href="/">Home</a>`).to('/'),
+      Link(html`<a href="/view1">view 1</a>`).to('/view1'),
+      Link(html`<a href="/view2">view 2</a>`).to('/view2')
     ).body}
   `;
 }

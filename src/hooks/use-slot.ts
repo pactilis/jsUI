@@ -6,12 +6,12 @@ export function useSlot(
   name = ''
 ) {
   useEffect(element => {
+    const selector = name ? `slot[name="${name}"]` : 'slot:not([name])';
     const slotElement:
       | HTMLSlotElement
       | null
-      | undefined = element.shadowRoot?.querySelector(
-      name ? `slot[name="${name}"]` : 'slot'
-    );
+      | undefined = element.shadowRoot?.querySelector(selector);
+
     if (slotElement) {
       const components = slotElement.assignedElements();
       return process(...components);

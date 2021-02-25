@@ -41,7 +41,9 @@ export abstract class View {
   }
 
   slot(name: string): this {
-    this.attrs.slot = name;
+    if (name) {
+      this.attrs.slot = name;
+    }
     return this;
   }
 

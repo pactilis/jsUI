@@ -1,16 +1,13 @@
-import { css, html } from 'lit-element';
-import { cssProp, view } from '../factory.js';
+import { css } from 'lit-element';
+import { cssProp, slot, view } from '../factory.js';
+import { Slot } from '../slot.js';
 import { View } from '../view.js';
 import './grid-item.js';
 
 export * from './grid-item.js';
 
 function template() {
-  return html` <slot></slot> `;
-}
-
-function slotTemplate({ elements }: { elements?: View[] }) {
-  return html`${elements?.map(el => el.body)}`;
+  return Slot();
 }
 
 const cssTemplate = css`
@@ -34,7 +31,8 @@ const cssTemplate = css`
 `;
 
 export class GridProps {
-  elements?: View[] = undefined;
+  @slot()
+  elements: View[] = [];
 
   @cssProp('--grid-template-columns')
   templateColumns = '';
@@ -69,7 +67,6 @@ export class GridProps {
 
 export const [Grid, GridView] = view('jsview-grid', {
   template,
-  slotTemplate,
   cssTemplate,
   Props: GridProps,
   mapBuilder: GridBuilder => (...elements: View[]) =>
