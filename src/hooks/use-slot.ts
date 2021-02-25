@@ -1,7 +1,7 @@
 import { useEffect } from './use-effect.js';
 
 export function useSlot(
-  process: (component: Element | null) => any,
+  process: (...components: Element[]) => any,
   deps: any[],
   name = ''
 ) {
@@ -13,9 +13,8 @@ export function useSlot(
       name ? `slot[name="${name}"]` : 'slot'
     );
     if (slotElement) {
-      const content = slotElement.assignedElements();
-      const component = content.length > 0 ? content[0] : null;
-      return process(component);
+      const components = slotElement.assignedElements();
+      return process(...components);
     }
     return null;
   }, deps);
