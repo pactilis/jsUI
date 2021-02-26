@@ -31,6 +31,7 @@
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
+    "@material/mwc-textfield": "^0.20.0",
     "@open-wc/demoing-storybook": "^2.0.0",
     "@open-wc/eslint-config": "^4.2.0",
     "@open-wc/testing": "^2.5.32",
