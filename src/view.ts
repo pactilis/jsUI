@@ -52,7 +52,14 @@ export abstract class View {
     return this;
   }
 
-  style(nameOrStyles: string | { [key: string]: string }, value?: string) {
+  style(
+    nameOrStyles: string | { [key: string]: string },
+    value?: string,
+    applyIfEmpty = true
+  ) {
+    if (!value && !applyIfEmpty) {
+      return this;
+    }
     if (typeof nameOrStyles === 'string') {
       if (value) {
         this.styles[nameOrStyles] = value;

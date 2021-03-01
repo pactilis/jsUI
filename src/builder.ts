@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { View, Clazz } from './view.js';
+import { Clazz, View } from './view.js';
 
 export type Builder<T> = {
   [k in keyof T]-?: T[k] extends boolean
@@ -11,7 +11,7 @@ export type Builder<T> = {
 export function createViewBuilder<T extends View>(
   Ctor: Clazz<T>,
   initValue: any = {},
-  cssProps: Map<string, string> = new Map()
+  cssProps: Map<string, string | string[]> = new Map()
 ): Builder<T> {
   const builder = (new Proxy(Object.assign(new Ctor(), initValue) as T, {
     get(target, prop) {
@@ -33,7 +33,13 @@ export function createViewBuilder<T extends View>(
 
       if (cssProps.has(String(prop))) {
         return (value: string) => {
-          target.style(cssProps.get(String(prop))!, value);
+          const cssPropCfg = cssProps.get(String(prop))!;
+          if (typeof cssPropCfg === 'string') {
+            target.style(cssPropCfg, value);
+          } else {
+            target.attr({ [cssPropCfg[1]]: '' });
+            target.style(cssPropCfg[0], value);
+          }
           return builder;
         };
       }

@@ -172,11 +172,11 @@ export function view<T, U extends T = T, V = BuilderFactory<U>>(
     }
   }
 
-  const _cssProps = cssProps ?? new Map<string, string>();
+  const _cssProps = cssProps ?? new Map<string, string | string[]>();
   if (Props && (Reflect as any).getMetadata) {
     const mixin = new Props();
     Object.keys(mixin).forEach(key => {
-      const propName = (Reflect as any).getMetadata(
+      const propName: string | string[] = (Reflect as any).getMetadata(
         cssPropMetadataKey,
         mixin,
         key
@@ -207,9 +207,13 @@ export function cssPropsFrom(...props: string[]) {
   );
 }
 
-export function cssProp(name: string) {
+export function cssProp(name: string, attrName?: string) {
   if ((Reflect as any).metadata) {
-    return (Reflect as any).metadata(cssPropMetadataKey, name);
+    let value: string | string[] = name;
+    if (attrName) {
+      value = [name, attrName];
+    }
+    return (Reflect as any).metadata(cssPropMetadataKey, value);
   }
   return undefined;
 }

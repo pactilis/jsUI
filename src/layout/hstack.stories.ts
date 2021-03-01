@@ -20,7 +20,5 @@ export const InsideVSTack = () =>
       createView(html`<button>A button 1</button>`),
       createView(html`<button>A button 2</button>`),
       createView(html`<button>A button 3</button>`)
-    ).gridColumnGap('5rem')
-  )
-    .gridColumnGap('1rem')
-    .justifyItems('stretch').body;
+    ).gridGap('5rem')
+  ).justifyItems('stretch').body;
