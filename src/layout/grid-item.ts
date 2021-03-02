@@ -12,16 +12,16 @@ View.prototype.gridItem = function gridItem({
   gridArea,
   placeSelf,
 }: GridItemOptions) {
-  this.style('grid-column', gridColumn, false);
-  this.style('grid-row', gridRow, false);
-  this.style('align-self', alignSelf, false);
-  this.style('justify-self', justifySelf, false);
-  this.style('grid-column-start', gridColumnStart, false);
-  this.style('grid-column-end', gridColumnEnd, false);
-  this.style('grid-row-start', gridRowStart, false);
-  this.style('grid-row-end', gridRowEnd, false);
-  this.style('grid-area', gridArea, false);
-  this.style('place-self', placeSelf, false);
+  this.style('grid-column', gridColumn);
+  this.style('grid-row', gridRow);
+  this.style('align-self', alignSelf);
+  this.style('justify-self', justifySelf);
+  this.style('grid-column-start', gridColumnStart);
+  this.style('grid-column-end', gridColumnEnd);
+  this.style('grid-row-start', gridRowStart);
+  this.style('grid-row-end', gridRowEnd);
+  this.style('grid-area', gridArea);
+  this.style('place-self', placeSelf);
   return this;
 };
 

@@ -18,7 +18,7 @@ export interface ViewAnimation {
 }
 
 export abstract class View {
-  attrs: { [key: string]: string } = {};
+  attrs: { [key: string]: string | boolean } = {};
   styles: { [key: string]: string } = {};
   animations: ViewAnimation[] = [];
 
@@ -52,14 +52,7 @@ export abstract class View {
     return this;
   }
 
-  style(
-    nameOrStyles: string | { [key: string]: string },
-    value?: string,
-    applyIfEmpty = true
-  ) {
-    if (!value && !applyIfEmpty) {
-      return this;
-    }
+  style(nameOrStyles: string | { [key: string]: string }, value?: string) {
     if (typeof nameOrStyles === 'string') {
       if (value) {
         this.styles[nameOrStyles] = value;
@@ -74,12 +67,27 @@ export abstract class View {
     return this;
   }
 
-  attr(attrs: { [key: string]: string }) {
+  attr(
+    nameOrAttrs: string | { [key: string]: string | boolean },
+    value?: string | boolean
+  ) {
+    if (typeof nameOrAttrs === 'string') {
+      if (typeof value === 'boolean') {
+        this.attrs[`?${nameOrAttrs}`] = value;
+        return this;
+      }
+      this.attrs[nameOrAttrs] = value ?? '';
+      return this;
+    }
     this.attrs = {
       ...this.attrs,
-      ...attrs,
+      ...nameOrAttrs,
     };
     return this;
+  }
+
+  className(name: string) {
+    return this.attr('class', name);
   }
 
   context(token: string, value: any) {
@@ -115,7 +123,7 @@ export type ViewElement = LitElement & { view: View };
 class TemplateView extends View {
   constructor(
     private template: (opts: {
-      attrs: { [key: string]: string };
+      attrs: { [key: string]: string | boolean };
       styles: { [key: string]: string };
     }) => TemplateResult
   ) {
@@ -129,7 +137,7 @@ class TemplateView extends View {
 export function createView(
   template:
     | ((opts: {
-        attrs: { [key: string]: string };
+        attrs: { [key: string]: string | boolean };
         styles: { [key: string]: string };
       }) => TemplateResult)
     | TemplateResult
