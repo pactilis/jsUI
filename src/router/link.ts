@@ -12,12 +12,14 @@ export class LinkProps {
   triggerEvent = 'click';
 
   to = '';
+  onActivate?: () => void = undefined;
 }
 
-function template({ trigger, triggerEvent, to }: LinkProps) {
+function template({ trigger, triggerEvent, to, onActivate }: LinkProps) {
   const listener = useMemo(
     () => (e: Event) => {
       e.preventDefault();
+      onActivate?.();
       navigate(to);
     },
     [to]
@@ -42,32 +44,3 @@ export const [Link] = view('jsui-router-link', {
   mapBuilder: LinkBuilder => (trigger: View | TemplateResult) =>
     LinkBuilder().trigger(trigger),
 });
-
-// export class LinkView extends View {
-//   label = '';
-//   to = '';
-
-//   className = '';
-
-//   private onClick = (e: Event) => {
-//     e.preventDefault();
-//     navigate(this.to);
-//   };
-
-//   get body() {
-//     return html`
-//       <a
-//         ...=${spread(this.attrs)}
-//         style="${styleMap(this.styles)}"
-//         class="${this.className}"
-//         href="${this.to}"
-//         @click="${this.onClick}"
-//         >${this.label}
-//       </a>
-//     `;
-//   }
-// }
-
-// export function Link(label: string) {
-//   return createViewBuilder(LinkView).label(label);
-// }
