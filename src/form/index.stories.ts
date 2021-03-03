@@ -1,5 +1,6 @@
 /* eslint-disable import/no-duplicates */
 import '@material/mwc-textfield';
+import { css } from 'lit-element';
 import { html } from 'lit-html';
 import { styleMap } from 'lit-html/directives/style-map';
 import { view } from '../factory.js';
@@ -22,7 +23,7 @@ const [MyForm] = view('demo-my-form', {
           createView(
             ({ styles }) => html`
               <div style="${styleMap(styles)}">
-                <label for="name">Name:</label>
+                <label for="name" class="red">Name:</label>
                 <input
                   id="name"
                   type="text"
@@ -38,7 +39,7 @@ const [MyForm] = view('demo-my-form', {
                 />
               </div>
             `
-          ).color('blue'),
+          ),
 
           createView(html`
             <mwc-textfield
@@ -123,6 +124,12 @@ const [MyForm] = view('demo-my-form', {
       .onResetting(() => console.log('Resetting form'))
       .onResetted(() => console.log('Resetted form'));
   },
+
+  cssTemplate: css`
+    .red {
+      color: red;
+    }
+  `,
 });
 
 export const Simple = () => MyForm().body;

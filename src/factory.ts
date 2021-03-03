@@ -50,7 +50,14 @@ export function view<T, U extends T = T, V = BuilderFactory<U>>(
     | ComponentOptionsWithCtor<T, U>
     | ComponentOptionsWithCtorAndFactory<T, U, V>
 ) {
-  const { template, slotTemplate, cssTemplate, cssProps, viewRoot } = options;
+  const {
+    template,
+    slotTemplate,
+    cssTemplate,
+    cssProps,
+    viewRoot,
+    noShadow,
+  } = options;
   let Props: Clazz<U> | undefined;
   let mapBuilder: ((_: () => Builder<U & View>) => V) | undefined;
 
@@ -78,6 +85,13 @@ export function view<T, U extends T = T, V = BuilderFactory<U>>(
       setCurrentComponent(this.componentId);
       const tpl = template.bind(this)(this.props);
       return processTemplate(tpl);
+    }
+
+    createRenderRoot() {
+      if (noShadow) {
+        return this;
+      }
+      return super.createRenderRoot();
     }
 
     firstUpdated() {
@@ -249,6 +263,7 @@ interface ComponentOptions<T> {
   cssTemplate?: (() => CSSResult) | CSSResult;
   cssProps?: Map<string, string>;
   viewRoot?: (element: Element) => Element;
+  noShadow?: boolean;
 }
 interface ComponentOptionsWithCtor<T, U> extends ComponentOptions<T> {
   Props: Clazz<U>;
