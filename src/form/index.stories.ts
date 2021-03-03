@@ -1,5 +1,6 @@
 /* eslint-disable import/no-duplicates */
 import '@material/mwc-textfield';
+import { spread } from '@open-wc/lit-helpers/src/spread';
 import { css } from 'lit-element';
 import { html } from 'lit-html';
 import { styleMap } from 'lit-html/directives/style-map';
@@ -21,9 +22,9 @@ const [MyForm] = view('demo-my-form', {
       ({ value, isValid, touched, onFieldChange, submit, setReset }) =>
         HSTack(
           createView(
-            ({ styles }) => html`
-              <div style="${styleMap(styles)}">
-                <label for="name" class="red">Name:</label>
+            ({ styles, attrs }) => html`
+              <div style="${styleMap(styles)}" ...=${spread(attrs)}>
+                <label for="name">Name:</label>
                 <input
                   id="name"
                   type="text"
@@ -39,7 +40,7 @@ const [MyForm] = view('demo-my-form', {
                 />
               </div>
             `
-          ),
+          ).className('red', 'upper'),
 
           createView(html`
             <mwc-textfield
@@ -128,6 +129,9 @@ const [MyForm] = view('demo-my-form', {
   cssTemplate: css`
     .red {
       color: red;
+    }
+    .upper {
+      text-transform: uppercase;
     }
   `,
 });

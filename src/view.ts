@@ -86,8 +86,8 @@ export abstract class View {
     return this;
   }
 
-  className(name: string) {
-    return this.attr('class', name);
+  className(...name: string[]) {
+    return this.attr('class', name.join(' '));
   }
 
   context(token: string, value: any) {
