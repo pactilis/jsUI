@@ -118,7 +118,7 @@ export function render(
   return litRender(result, container, options);
 }
 
-export type ViewElement = LitElement & { view: View };
+export type ViewElement<T extends View = View> = LitElement & { view: T };
 
 class TemplateView extends View {
   constructor(

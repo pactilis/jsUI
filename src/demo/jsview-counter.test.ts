@@ -12,15 +12,16 @@ describe('Counter', () => {
 
   it('decreases the counter on button - click', async () => {
     const el = await fixture(Counter());
-    query(el, Button)!.click();
+    const button = query(el, Button);
+    button!.view.onClick?.();
     await el.updateComplete;
     expect(query(el, 'h2')?.textContent).to.eq('Hey there Nr. 4!');
   });
 
   it('increases the counter on button + click', async () => {
     const el = await fixture(Counter());
-    const button = queryAll(el, Button)[1] as HTMLButtonElement;
-    button.click();
+    const button = queryAll(el, Button)[1];
+    button.view.onClick!();
     await el.updateComplete;
     expect(query(el, 'h2')?.textContent).to.eq('Hey there Nr. 6!');
   });

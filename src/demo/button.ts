@@ -12,9 +12,7 @@ function template({ label, onClick }: Props) {
 
 export const [Button] = view('demo-button', {
   template,
-  viewRoot(element) {
-    return element.shadowRoot?.querySelector('button') as Element;
-  },
+
   Props,
   mapBuilder: ButtonBuilder => (label: string) => ButtonBuilder().label(label),
 });

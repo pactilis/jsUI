@@ -27,12 +27,12 @@ export const slotMetadataKey = Symbol('slot');
 export function view<T, U, V>(
   tag: string,
   options: ComponentOptionsWithCtorAndFactory<T, U, V>
-): [V & { View: Clazz<View> }, Clazz<View>, Clazz<any>];
+): [V & { View: Clazz<U & View> }, Clazz<U & View>, Clazz<any>];
 
 export function view<T, U extends T = T>(
   tag: string,
   options: ComponentOptionsWithCtor<T, U>
-): [BuilderFactory<U> & { View: Clazz<View> }, Clazz<View>, Clazz<any>];
+): [BuilderFactory<U> & { View: Clazz<U & View> }, Clazz<U & View>, Clazz<any>];
 
 export function view<T, U extends T = T>(
   tag: string,

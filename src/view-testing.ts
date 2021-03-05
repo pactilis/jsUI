@@ -36,15 +36,15 @@ export function query<K extends keyof SVGElementTagNameMap>(
 
 export function query(element: ViewElement, search: string): Element | null;
 
-export function query(
+export function query<T extends View>(
   element: ViewElement,
-  ...searchClasses: { View: Clazz<View> }[]
-): ViewElement | null;
+  ...searchClasses: { View: Clazz<T> }[]
+): ViewElement<T> | null;
 
-export function query(
+export function query<T extends View = View>(
   element: ViewElement,
-  ...searchClasses: { View: Clazz<View> }[] | string[]
-): ViewElement | Element | null {
+  ...searchClasses: { View: Clazz<T> }[] | string[]
+): ViewElement<T> | Element | null {
   if (searchClasses.length === 0) {
     return View.root(element);
   }
@@ -63,7 +63,7 @@ export function query(
   for (let i = 0; i < nodes!.length; i += 1) {
     const el: ViewElement = nodes[i] as any;
     if (el.view instanceof searchClasses[0].View) {
-      return query(el, ...(searchClasses as { View: Clazz<View> }[]).slice(1));
+      return query(el, ...(searchClasses as { View: Clazz<T> }[]).slice(1));
     }
   }
   return null;
@@ -74,14 +74,14 @@ export function queryAll(
   search: string
 ): NodeListOf<Element>;
 
-export function queryAll(
+export function queryAll<T extends View = View>(
   element: ViewElement,
-  ...searchClasses: { View: Clazz<View> }[]
-): Element[];
+  ...searchClasses: { View: Clazz<T> }[]
+): ViewElement<T>[];
 
-export function queryAll(
+export function queryAll<T extends View = View>(
   element: ViewElement,
-  ...searchClasses: { View: Clazz<View> }[] | string[]
+  ...searchClasses: { View: Clazz<T> }[] | string[]
 ): Element[] | NodeListOf<Element> {
   if (searchClasses.length === 0) {
     return [];
