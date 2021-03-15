@@ -36,11 +36,10 @@ function template({ routes, fallback, manualLocation }: RouterProps) {
     }
   });
 
-  if (!location) {
-    return html``;
-  }
-
   const [route, routingParam] = useMemo(() => {
+    if (!location) {
+      return [undefined, undefined];
+    }
     const { pathname: path, search } = location;
 
     let rParam: RoutingParam | undefined;
