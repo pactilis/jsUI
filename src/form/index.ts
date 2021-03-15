@@ -2,7 +2,7 @@ import { html } from 'lit-html';
 import { Builder } from '../builder.js';
 import { view } from '../factory.js';
 import { useEffect, useState } from '../hooks/index.js';
-import { View } from '../view.js';
+import { Clazz, View } from '../view.js';
 
 export class FormProps<T> {
   factory?: (_: FormFactoryParam<T>) => View = undefined;
@@ -25,7 +25,13 @@ export interface FormFactoryParam<T> {
   setReset: (name: keyof T, fn: () => void) => void;
 }
 
-export const [Form, FormView] = view('jsview-form', {
+export const [Form, FormView]: [
+  (<T>(factory: (_: FormFactoryParam<T>) => View) => Builder<FormProps<T>>) & {
+    View: Clazz<FormProps<unknown> & View>;
+  },
+  Clazz<FormProps<unknown> & View>,
+  Clazz<unknown>
+] = view('jsview-form', {
   Props: FormProps,
 
   mapBuilder: FormBuilder => <T>(factory: (_: FormFactoryParam<T>) => View) =>

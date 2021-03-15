@@ -37,14 +37,67 @@ export function query<K extends keyof SVGElementTagNameMap>(
 export function query(element: ViewElement, search: string): Element | null;
 
 export function query<T extends View>(
-  element: ViewElement,
-  ...searchClasses: { View: Clazz<T> }[]
+  element: ViewElement<T>
 ): ViewElement<T> | null;
 
-export function query<T extends View = View>(
+export function query<T extends View>(
   element: ViewElement,
-  ...searchClasses: { View: Clazz<T> }[] | string[]
-): ViewElement<T> | Element | null {
+  Component: { View: Clazz<T> }
+): ViewElement<T> | null;
+
+export function query<T extends View>(
+  element: ViewElement,
+  Component1: { View: Clazz<any> },
+  Component2: { View: Clazz<T> }
+): ViewElement<T> | null;
+
+export function query<K extends keyof HTMLElementTagNameMap>(
+  element: ViewElement,
+  Component1: { View: Clazz<any> },
+  search: K
+): HTMLElementTagNameMap[K] | null;
+
+export function query<K extends keyof SVGElementTagNameMap>(
+  element: ViewElement,
+  Component1: { View: Clazz<any> },
+  search: K
+): SVGElementTagNameMap[K] | null;
+
+export function query<T extends View>(
+  element: ViewElement,
+  Component1: { View: Clazz<any> },
+  Component2: { View: Clazz<any> },
+  Component3: { View: Clazz<T> }
+): ViewElement<T> | null;
+
+export function query<K extends keyof HTMLElementTagNameMap>(
+  element: ViewElement,
+  Component1: { View: Clazz<any> },
+  Component2: { View: Clazz<any> },
+  search: K
+): HTMLElementTagNameMap[K] | null;
+
+export function query<K extends keyof SVGElementTagNameMap>(
+  element: ViewElement,
+  Component1: { View: Clazz<any> },
+  Component2: { View: Clazz<any> },
+  search: K
+): SVGElementTagNameMap[K] | null;
+
+export function query<T extends View>(
+  element: ViewElement,
+  ...rest: any
+): ViewElement<T> | null;
+
+export function query(
+  element: ViewElement,
+  ...searchClasses: { View: Clazz<any> }[] | string[]
+): ViewElement<any> | Element | null {
+  if (searchClasses.length > 3) {
+    throw new Error(
+      `a maximum of 3 search classes is required but got ${searchClasses.length}`
+    );
+  }
   if (searchClasses.length === 0) {
     return View.root(element);
   }
@@ -63,7 +116,7 @@ export function query<T extends View = View>(
   for (let i = 0; i < nodes!.length; i += 1) {
     const el: ViewElement = nodes[i] as any;
     if (el.view instanceof searchClasses[0].View) {
-      return query(el, ...(searchClasses as { View: Clazz<T> }[]).slice(1));
+      return query(el, ...(searchClasses as { View: Clazz<any> }[]).slice(1));
     }
   }
   return null;
