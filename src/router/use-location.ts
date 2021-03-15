@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from '../hooks/index.js';
+import { useEffect } from '../hooks/index.js';
 
 const callbacks = new Set<(location: Location) => void>();
 
@@ -17,7 +17,7 @@ export function navigate(url: string) {
 
 export function useLocation(callback: (location: Location) => void) {
   useEffect(() => {
-    const listener = useMemo(() => () => callback(window.location), [callback]);
+    const listener = () => callback(window.location);
     window.addEventListener('popstate', listener);
 
     register(callback);
